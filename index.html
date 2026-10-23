@@ -37,198 +37,243 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200">
 
-    <!-- NAVIGATION BAR -->
-    <nav class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- Logo & Title -->
-                <div class="flex items-center space-x-3">
-                    <div class="bg-gradient-to-tr from-emerald-600 to-teal-500 p-2.5 rounded-xl text-white shadow-md shadow-emerald-500/20">
-                        <i data-lucide="clipboard-check" class="w-6 h-6"></i>
+    <!-- ========================================== -->
+    <!-- 1. HALAMAN WELCOME / LOGIN GURU            -->
+    <!-- ========================================== -->
+    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-900">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full p-8 shadow-2xl border border-white/20 backdrop-blur-md">
+            
+            <!-- Header Welcome -->
+            <div class="text-center space-y-3 mb-6">
+                <div class="inline-flex p-4 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mb-1 shadow-inner">
+                    <i data-lucide="clipboard-check" class="w-10 h-10"></i>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Selamat Datang di <span class="text-emerald-600 dark:text-emerald-400">ABSKES</span></h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Silakan masukkan nama guru pengajar untuk memulai absensi kelas.</p>
+            </div>
+
+            <!-- Form Identitas Guru -->
+            <form onsubmit="handleTeacherLogin(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Nama Guru / Pengajar <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <i data-lucide="user-check" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="teacherNameInput" required placeholder="Contoh: Pak Budi, S.Pd." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/40 transition-all flex items-center justify-center gap-2 text-sm mt-2">
+                    Masuk ke ABSKES <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-xs text-slate-400">Sistem Absensi Kelas Digital Versi 2.0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. APLIKASI UTAMA                          -->
+    <!-- ========================================== -->
+    <div id="mainApp" class="hidden">
+        
+        <!-- NAVIGATION BAR -->
+        <nav class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Logo & Title -->
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-gradient-to-tr from-emerald-600 to-teal-500 p-2.5 rounded-xl text-white shadow-md shadow-emerald-500/20">
+                            <i data-lucide="clipboard-check" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                                ABSKES
+                            </h1>
+                            <!-- Display Nama Guru Active -->
+                            <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                                <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+                                <span id="displayTeacherName">Guru: -</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right Tools -->
+                    <div class="flex items-center space-x-2 sm:space-x-3">
+                        <!-- Class Selector -->
+                        <div class="relative">
+                            <select id="classSelector" onchange="changeActiveClass()" class="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 text-sm font-semibold rounded-lg pl-9 pr-8 py-2 border-0 focus:ring-2 focus:ring-emerald-500 cursor-pointer appearance-none shadow-inner">
+                            </select>
+                            <i data-lucide="school" class="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none"></i>
+                            <i data-lucide="chevron-down" class="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none"></i>
+                        </div>
+
+                        <!-- Manage Classes Button -->
+                        <button onclick="openClassModal()" class="p-2 sm:px-3 sm:py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
+                            <i data-lucide="folder-cog" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+                            <span class="hidden md:inline">Kelas</span>
+                        </button>
+
+                        <!-- Manage Roster Button -->
+                        <button onclick="openStudentModal()" class="p-2 sm:px-3 sm:py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
+                            <i data-lucide="users" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+                            <span class="hidden md:inline">Siswa</span>
+                        </button>
+
+                        <!-- Ganti Guru Button -->
+                        <button onclick="logoutTeacher()" title="Ganti Pengajar" class="p-2 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition border border-slate-200 dark:border-slate-700">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                        </button>
+
+                        <!-- Dark Mode Toggle -->
+                        <button onclick="toggleDarkMode()" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                            <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                            <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTAINER -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+            <!-- HEADER CONTROLS (Date, Status Filter, Export) -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Date Picker -->
+                    <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-700/60 px-3 py-2 rounded-xl text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
+                        <i data-lucide="calendar" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+                        <input type="date" id="attendanceDate" onchange="loadAttendanceForSelectedDate()" class="bg-transparent text-sm font-semibold focus:outline-none cursor-pointer">
+                    </div>
+
+                    <!-- Search Student -->
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="searchInput" oninput="renderStudentList()" placeholder="Cari siswa..." class="pl-9 pr-3 py-2 bg-slate-100 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-44 sm:w-60">
+                    </div>
+                </div>
+
+                <!-- Global Action Buttons -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button onclick="markAll('Hadir')" class="px-3 py-2 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60 transition border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                        <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Semua Hadir
+                    </button>
+                    <button onclick="exportToCSV()" class="px-3 py-2 text-xs font-semibold rounded-lg bg-slate-800 text-white hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 transition shadow-sm flex items-center gap-1.5">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> Ekspor CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- STATS ANALYTICS DASHBOARD -->
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl">
+                        <i data-lucide="users" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                            ABSKES
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">v2.0</span>
-                        </h1>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium hidden sm:block">Aplikasi Absensi Kelas Digital</p>
+                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Siswa</p>
+                        <h3 id="statTotal" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
                     </div>
                 </div>
 
-                <!-- Right Tools -->
-                <div class="flex items-center space-x-2 sm:space-x-3">
-                    <!-- Class Selector -->
-                    <div class="relative">
-                        <select id="classSelector" onchange="changeActiveClass()" class="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 text-sm font-semibold rounded-lg pl-9 pr-8 py-2 border-0 focus:ring-2 focus:ring-emerald-500 cursor-pointer appearance-none shadow-inner">
-                        </select>
-                        <i data-lucide="school" class="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none"></i>
-                        <i data-lucide="chevron-down" class="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none"></i>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-xl">
+                        <i data-lucide="user-check" class="w-5 h-5"></i>
                     </div>
+                    <div>
+                        <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Hadir</p>
+                        <h3 id="statHadir" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
+                    </div>
+                </div>
 
-                    <!-- Manage Classes Button -->
-                    <button onclick="openClassModal()" class="p-2 sm:px-3 sm:py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
-                        <i data-lucide="folder-cog" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
-                        <span class="hidden md:inline">Kelas</span>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl">
+                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Izin</p>
+                        <h3 id="statIzin" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl">
+                        <i data-lucide="thermometer" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Sakit</p>
+                        <h3 id="statSakit" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3 col-span-2 sm:col-span-1">
+                    <div class="p-3 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 rounded-xl">
+                        <i data-lucide="user-x" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider">Alfa</p>
+                        <h3 id="statAlfa" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold text-slate-600 dark:text-slate-300 tracking-wide uppercase">Persentase Kehadiran Kelas</span>
+                    <span id="statPercent" class="text-sm font-bold text-emerald-600 dark:text-emerald-400">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-700 h-3 rounded-full overflow-hidden flex">
+                    <div id="barHadir" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+                    <div id="barIzin" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div>
+                    <div id="barSakit" class="bg-amber-500 h-full transition-all duration-500" style="width: 0%"></div>
+                    <div id="barAlfa" class="bg-rose-500 h-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- STUDENT ROSTER & ATTENDANCE TABLE -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+                    <h2 id="currentClassTitle" class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i data-lucide="list-checks" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i> Daftar Kehadiran Siswa
+                    </h2>
+                    <span id="studentCountBadge" class="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">0 Siswa</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                <th class="py-3.5 px-4 w-12 text-center">No</th>
+                                <th class="py-3.5 px-4">Nama Siswa</th>
+                                <th class="py-3.5 px-4 text-center">Status Kehadiran</th>
+                                <th class="py-3.5 px-4">Keterangan / Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/60 text-sm">
+                            <!-- Student Rows dynamically rendered here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden p-12 text-center">
+                    <i data-lucide="user-x" class="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3"></i>
+                    <h3 class="text-base font-semibold text-slate-700 dark:text-slate-300">Belum ada siswa di kelas ini</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">Klik tombol "Kelola Siswa" di bagian atas untuk menambahkan daftar siswa baru.</p>
+                    <button onclick="openStudentModal()" class="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition shadow-sm inline-flex items-center gap-2">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i> Tambah Siswa Sekarang
                     </button>
-
-                    <!-- Manage Roster Button -->
-                    <button onclick="openStudentModal()" class="p-2 sm:px-3 sm:py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
-                        <i data-lucide="users" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
-                        <span class="hidden md:inline">Siswa</span>
-                    </button>
-
-                    <!-- Dark Mode Toggle -->
-                    <button onclick="toggleDarkMode()" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-                        <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
-                        <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
-                    </button>
                 </div>
             </div>
-        </div>
-    </nav>
-
-    <!-- MAIN CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-
-        <!-- HEADER CONTROLS (Date, Status Filter, Export) -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <div class="flex flex-wrap items-center gap-3">
-                <!-- Date Picker -->
-                <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-700/60 px-3 py-2 rounded-xl text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
-                    <i data-lucide="calendar" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
-                    <input type="date" id="attendanceDate" onchange="loadAttendanceForSelectedDate()" class="bg-transparent text-sm font-semibold focus:outline-none cursor-pointer">
-                </div>
-
-                <!-- Search Student -->
-                <div class="relative">
-                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="searchInput" oninput="renderStudentList()" placeholder="Cari siswa..." class="pl-9 pr-3 py-2 bg-slate-100 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-44 sm:w-60">
-                </div>
-            </div>
-
-            <!-- Global Action Buttons -->
-            <div class="flex items-center gap-2 flex-wrap">
-                <button onclick="markAll('Hadir')" class="px-3 py-2 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60 transition border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
-                    <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Semua Hadir
-                </button>
-                <button onclick="exportToCSV()" class="px-3 py-2 text-xs font-semibold rounded-lg bg-slate-800 text-white hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 transition shadow-sm flex items-center gap-1.5">
-                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Ekspor CSV
-                </button>
-            </div>
-        </div>
-
-        <!-- STATS ANALYTICS DASHBOARD -->
-        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-            <!-- Total -->
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
-                <div class="p-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl">
-                    <i data-lucide="users" class="w-5 h-5"></i>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Siswa</p>
-                    <h3 id="statTotal" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
-                </div>
-            </div>
-
-            <!-- Hadir -->
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
-                <div class="p-3 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-xl">
-                    <i data-lucide="user-check" class="w-5 h-5"></i>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Hadir</p>
-                    <h3 id="statHadir" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
-                </div>
-            </div>
-
-            <!-- Izin -->
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
-                <div class="p-3 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl">
-                    <i data-lucide="file-text" class="w-5 h-5"></i>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Izin</p>
-                    <h3 id="statIzin" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
-                </div>
-            </div>
-
-            <!-- Sakit -->
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
-                <div class="p-3 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl">
-                    <i data-lucide="thermometer" class="w-5 h-5"></i>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Sakit</p>
-                    <h3 id="statSakit" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
-                </div>
-            </div>
-
-            <!-- Alfa -->
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3 col-span-2 sm:col-span-1">
-                <div class="p-3 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 rounded-xl">
-                    <i data-lucide="user-x" class="w-5 h-5"></i>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider">Alfa</p>
-                    <h3 id="statAlfa" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
-                </div>
-            </div>
-        </div>
-
-        <!-- PROGRESS BAR -->
-        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <div class="flex justify-between items-center mb-2">
-                <span class="text-xs font-bold text-slate-600 dark:text-slate-300 tracking-wide uppercase">Persentase Kehadiran Kelas</span>
-                <span id="statPercent" class="text-sm font-bold text-emerald-600 dark:text-emerald-400">0%</span>
-            </div>
-            <div class="w-full bg-slate-100 dark:bg-slate-700 h-3 rounded-full overflow-hidden flex">
-                <div id="barHadir" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
-                <div id="barIzin" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div>
-                <div id="barSakit" class="bg-amber-500 h-full transition-all duration-500" style="width: 0%"></div>
-                <div id="barAlfa" class="bg-rose-500 h-full transition-all duration-500" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <!-- STUDENT ROSTER & ATTENDANCE TABLE -->
-        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
-            <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
-                <h2 id="currentClassTitle" class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <i data-lucide="list-checks" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i> Daftar Kehadiran Siswa
-                </h2>
-                <span id="studentCountBadge" class="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">0 Siswa</span>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            <th class="py-3.5 px-4 w-12 text-center">No</th>
-                            <th class="py-3.5 px-4">Nama Siswa</th>
-                            <th class="py-3.5 px-4 text-center">Status Kehadiran</th>
-                            <th class="py-3.5 px-4">Keterangan / Catatan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="studentTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/60 text-sm">
-                        <!-- Student Rows dynamically rendered here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Empty State -->
-            <div id="emptyState" class="hidden p-12 text-center">
-                <i data-lucide="user-x" class="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3"></i>
-                <h3 class="text-base font-semibold text-slate-700 dark:text-slate-300">Belum ada siswa di kelas ini</h3>
-                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">Klik tombol "Kelola Siswa" di bagian atas untuk menambahkan daftar siswa baru.</p>
-                <button onclick="openStudentModal()" class="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition shadow-sm inline-flex items-center gap-2">
-                    <i data-lucide="user-plus" class="w-4 h-4"></i> Tambah Siswa Sekarang
-                </button>
-            </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <!-- MODAL: KELOLA KELAS -->
     <div id="classModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden transform transition-all">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
             <div class="p-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
                 <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <i data-lucide="school" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i> Kelola Daftar Kelas
@@ -239,7 +284,6 @@
             </div>
 
             <div class="p-5 space-y-4">
-                <!-- Add New Class Input -->
                 <div class="flex gap-2">
                     <input type="text" id="newClassNameInput" placeholder="Contoh: 10 IPA 1" class="flex-1 px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     <button onclick="addNewClass()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition flex items-center gap-1">
@@ -247,9 +291,7 @@
                     </button>
                 </div>
 
-                <!-- Existing Classes List -->
                 <div class="border border-slate-200 dark:border-slate-700 rounded-xl divide-y divide-slate-100 dark:divide-slate-700 max-h-60 overflow-y-auto" id="classListContainer">
-                    <!-- Dynamic class items -->
                 </div>
             </div>
         </div>
@@ -271,7 +313,6 @@
             </div>
 
             <div class="p-5 space-y-4">
-                <!-- Single Add Input -->
                 <div class="flex gap-2">
                     <input type="text" id="newStudentInput" placeholder="Nama siswa baru..." class="flex-1 px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     <button onclick="addSingleStudent()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition">
@@ -279,7 +320,6 @@
                     </button>
                 </div>
 
-                <!-- Bulk Import Collapsible -->
                 <details class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
                     <summary class="font-semibold text-slate-700 dark:text-slate-300 cursor-pointer flex items-center gap-1">
                         <i data-lucide="file-plus" class="w-4 h-4 text-emerald-600"></i> Tambah Banyak Siswa Sekaligus (Masal)
@@ -292,9 +332,7 @@
                     </div>
                 </details>
 
-                <!-- Student Roster List -->
                 <div class="border border-slate-200 dark:border-slate-700 rounded-xl divide-y divide-slate-100 dark:divide-slate-700 max-h-60 overflow-y-auto" id="studentRosterContainer">
-                    <!-- Dynamic student items -->
                 </div>
             </div>
         </div>
@@ -304,6 +342,9 @@
     <script>
         // DATA STRUCTURE & INITIAL STATE
         let appData = {
+            teacher: {
+                name: ''
+            },
             classes: [
                 { id: 'c1', name: '10 IPA 1' },
                 { id: 'c2', name: '10 IPA 2' }
@@ -321,7 +362,6 @@
                     { id: 's7', name: 'Gita Gutawa' }
                 ]
             },
-            // Records format: { "classId_YYYY-MM-DD": { studentId: { status: 'Hadir', note: '' } } }
             attendanceRecords: {}
         };
 
@@ -335,11 +375,57 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('attendanceDate').value = today;
 
+            // Check if teacher is already set
+            if (appData.teacher && appData.teacher.name) {
+                showMainApp();
+            } else {
+                showLoginScreen();
+            }
+
+            lucide.createIcons();
+        });
+
+        // LOGIN / WELCOME SCREEN HANDLERS
+        function handleTeacherLogin(e) {
+            e.preventDefault();
+            const teacherName = document.getElementById('teacherNameInput').value.trim();
+
+            if (!teacherName) return;
+
+            appData.teacher = {
+                name: teacherName
+            };
+
+            saveToLocalStorage();
+            showMainApp();
+        }
+
+        function showLoginScreen() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+
+            // Render Teacher Name
+            document.getElementById('displayTeacherName').textContent = `Guru: ${appData.teacher.name}`;
+
             // Render Select Options & Load Active
             renderClassSelector();
             loadAttendanceForSelectedDate();
             lucide.createIcons();
-        });
+        }
+
+        function logoutTeacher() {
+            if (confirm("Ingin mengganti data guru pengajar?")) {
+                appData.teacher = { name: '' };
+                saveToLocalStorage();
+                document.getElementById('teacherNameInput').value = '';
+                showLoginScreen();
+            }
+        }
 
         // LOCAL STORAGE HANDLERS
         function saveToLocalStorage() {
@@ -564,7 +650,6 @@
             const currentRecord = appData.attendanceRecords[recordKey];
             const studentList = appData.students[activeClassId] || [];
 
-            // Filter
             const filteredStudents = studentList.filter(s => s.name.toLowerCase().includes(searchVal));
 
             document.getElementById('studentCountBadge').textContent = `${studentList.length} Siswa`;
@@ -703,7 +788,7 @@
             }
         }
 
-        // EXPORT CSV
+        // EXPORT CSV (Termasuk Nama Guru)
         function exportToCSV() {
             const studentList = appData.students[activeClassId] || [];
             if (studentList.length === 0) {
@@ -717,7 +802,8 @@
             const currentRecord = appData.attendanceRecords[key] || {};
 
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += `Laporan Absensi - ${currentClass ? currentClass.name : ''}\n`;
+            csvContent += `LAPORAN ABSENSI KELAS - ${currentClass ? currentClass.name : ''}\n`;
+            csvContent += `Guru Pengajar: ${appData.teacher.name || '-'}\n`;
             csvContent += `Tanggal: ${date}\n\n`;
             csvContent += "No,Nama Siswa,Status,Catatan\n";
 
