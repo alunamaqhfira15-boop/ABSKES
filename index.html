@@ -30,9 +30,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200">
@@ -43,22 +41,29 @@
     <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-900">
         <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full p-8 shadow-2xl border border-white/20 backdrop-blur-md">
             
-            <!-- Header Welcome -->
             <div class="text-center space-y-3 mb-6">
                 <div class="inline-flex p-4 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mb-1 shadow-inner">
                     <i data-lucide="clipboard-check" class="w-10 h-10"></i>
                 </div>
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Selamat Datang di <span class="text-emerald-600 dark:text-emerald-400">ABSKES</span></h1>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Silakan masukkan nama guru pengajar untuk memulai absensi kelas.</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Silakan masukkan identitas guru pengajar untuk memulai absensi kelas.</p>
             </div>
 
             <!-- Form Identitas Guru -->
-            <form onsubmit="handleTeacherLogin(event)" class="space-y-5">
+            <form onsubmit="handleTeacherLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Nama Guru / Pengajar <span class="text-rose-500">*</span></label>
                     <div class="relative">
                         <i data-lucide="user-check" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
                         <input type="text" id="teacherNameInput" required placeholder="Contoh: Pak Budi, S.Pd." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">NIP / NIK Guru <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <i data-lucide="id-card" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="teacherNipInput" required placeholder="Contoh: 19850101 201001 1 001" class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
                 </div>
 
@@ -82,7 +87,6 @@
         <nav class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
-                    <!-- Logo & Title -->
                     <div class="flex items-center space-x-3">
                         <div class="bg-gradient-to-tr from-emerald-600 to-teal-500 p-2.5 rounded-xl text-white shadow-md shadow-emerald-500/20">
                             <i data-lucide="clipboard-check" class="w-6 h-6"></i>
@@ -91,15 +95,13 @@
                             <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
                                 ABSKES
                             </h1>
-                            <!-- Display Nama Guru Active -->
                             <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
                                 <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
-                                <span id="displayTeacherName">Guru: -</span>
+                                <span id="displayTeacherInfo">Guru: -</span>
                             </p>
                         </div>
                     </div>
 
-                    <!-- Right Tools -->
                     <div class="flex items-center space-x-2 sm:space-x-3">
                         <!-- Class Selector -->
                         <div class="relative">
@@ -109,24 +111,20 @@
                             <i data-lucide="chevron-down" class="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none"></i>
                         </div>
 
-                        <!-- Manage Classes Button -->
                         <button onclick="openClassModal()" class="p-2 sm:px-3 sm:py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
                             <i data-lucide="folder-cog" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
                             <span class="hidden md:inline">Kelas</span>
                         </button>
 
-                        <!-- Manage Roster Button -->
                         <button onclick="openStudentModal()" class="p-2 sm:px-3 sm:py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
                             <i data-lucide="users" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
                             <span class="hidden md:inline">Siswa</span>
                         </button>
 
-                        <!-- Ganti Guru Button -->
                         <button onclick="logoutTeacher()" title="Ganti Pengajar" class="p-2 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition border border-slate-200 dark:border-slate-700">
                             <i data-lucide="log-out" class="w-4 h-4"></i>
                         </button>
 
-                        <!-- Dark Mode Toggle -->
                         <button onclick="toggleDarkMode()" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
                             <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
                             <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
@@ -139,23 +137,20 @@
         <!-- MAIN CONTAINER -->
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-            <!-- HEADER CONTROLS (Date, Status Filter, Export) -->
+            <!-- HEADER CONTROLS -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <div class="flex flex-wrap items-center gap-3">
-                    <!-- Date Picker -->
                     <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-700/60 px-3 py-2 rounded-xl text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
                         <i data-lucide="calendar" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
                         <input type="date" id="attendanceDate" onchange="loadAttendanceForSelectedDate()" class="bg-transparent text-sm font-semibold focus:outline-none cursor-pointer">
                     </div>
 
-                    <!-- Search Student -->
                     <div class="relative">
                         <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="searchInput" oninput="renderStudentList()" placeholder="Cari siswa..." class="pl-9 pr-3 py-2 bg-slate-100 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-44 sm:w-60">
+                        <input type="text" id="searchInput" oninput="renderStudentList()" placeholder="Cari nama atau NIS..." class="pl-9 pr-3 py-2 bg-slate-100 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-44 sm:w-60">
                     </div>
                 </div>
 
-                <!-- Global Action Buttons -->
                 <div class="flex items-center gap-2 flex-wrap">
                     <button onclick="markAll('Hadir')" class="px-3 py-2 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60 transition border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
                         <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Semua Hadir
@@ -247,18 +242,18 @@
                         <thead>
                             <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                                 <th class="py-3.5 px-4 w-12 text-center">No</th>
+                                <th class="py-3.5 px-4 w-32">NIS</th>
                                 <th class="py-3.5 px-4">Nama Siswa</th>
                                 <th class="py-3.5 px-4 text-center">Status Kehadiran</th>
                                 <th class="py-3.5 px-4">Keterangan / Catatan</th>
+                                <th class="py-3.5 px-4 text-center w-24">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="studentTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/60 text-sm">
-                            <!-- Student Rows dynamically rendered here -->
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Empty State -->
                 <div id="emptyState" class="hidden p-12 text-center">
                     <i data-lucide="user-x" class="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3"></i>
                     <h3 class="text-base font-semibold text-slate-700 dark:text-slate-300">Belum ada siswa di kelas ini</h3>
@@ -269,6 +264,57 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- MODAL: REKAPAN INDIVIDU SISWA -->
+    <div id="studentReportModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div class="p-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2" id="reportStudentName">
+                        <i data-lucide="user" class="w-5 h-5 text-emerald-600"></i> Nama Siswa
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" id="reportStudentNis">NIS: -</p>
+                </div>
+                <button onclick="closeStudentReportModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-5 space-y-5">
+                <!-- Summary Stats Badge -->
+                <div class="grid grid-cols-4 gap-2 text-center">
+                    <div class="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl">
+                        <p class="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400">Hadir</p>
+                        <p class="text-lg font-extrabold text-emerald-700 dark:text-emerald-300" id="reportCountHadir">0</p>
+                    </div>
+                    <div class="p-2.5 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/50 rounded-xl">
+                        <p class="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400">Izin</p>
+                        <p class="text-lg font-extrabold text-blue-700 dark:text-blue-300" id="reportCountIzin">0</p>
+                    </div>
+                    <div class="p-2.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 rounded-xl">
+                        <p class="text-[10px] uppercase font-bold text-amber-600 dark:text-amber-400">Sakit</p>
+                        <p class="text-lg font-extrabold text-amber-700 dark:text-amber-300" id="reportCountSakit">0</p>
+                    </div>
+                    <div class="p-2.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/50 rounded-xl">
+                        <p class="text-[10px] uppercase font-bold text-rose-600 dark:text-rose-400">Alfa</p>
+                        <p class="text-lg font-extrabold text-rose-700 dark:text-rose-300" id="reportCountAlfa">0</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 bg-slate-100 dark:bg-slate-700/50 rounded-xl">
+                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Persentase Kehadiran Individu</span>
+                    <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400" id="reportPercentage">0%</span>
+                </div>
+
+                <!-- Timeline / History List -->
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Riwayat Kehadiran Per Tanggal</h4>
+                    <div class="border border-slate-200 dark:border-slate-700 rounded-xl divide-y divide-slate-100 dark:divide-slate-700 max-h-56 overflow-y-auto" id="reportHistoryContainer">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL: KELOLA KELAS -->
@@ -313,19 +359,23 @@
             </div>
 
             <div class="p-5 space-y-4">
-                <div class="flex gap-2">
-                    <input type="text" id="newStudentInput" placeholder="Nama siswa baru..." class="flex-1 px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    <button onclick="addSingleStudent()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition">
-                        Tambah
-                    </button>
+                <!-- Single Student Form with NIS -->
+                <div class="grid grid-cols-3 gap-2">
+                    <input type="text" id="newStudentNisInput" placeholder="NIS" class="col-span-1 px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="newStudentInput" placeholder="Nama siswa baru..." class="col-span-2 px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
+                <button onclick="addSingleStudent()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition">
+                    + Tambah Siswa Baru
+                </button>
 
+                <!-- Bulk Import -->
                 <details class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
                     <summary class="font-semibold text-slate-700 dark:text-slate-300 cursor-pointer flex items-center gap-1">
                         <i data-lucide="file-plus" class="w-4 h-4 text-emerald-600"></i> Tambah Banyak Siswa Sekaligus (Masal)
                     </summary>
                     <div class="mt-3 space-y-2">
-                        <textarea id="bulkStudentInput" rows="3" placeholder="Masukkan nama siswa (pisahkan dengan baris baru atau koma)..." class="w-full p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                        <p class="text-[11px] text-slate-400">Format: <code>NIS, Nama Siswa</code> (satu per baris)</p>
+                        <textarea id="bulkStudentInput" rows="3" placeholder="Contoh:&#10;1001, Ahmad Fauzi&#10;1002, Budi Santoso" class="w-full p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
                         <button onclick="addBulkStudents()" class="w-full py-2 bg-slate-800 dark:bg-slate-700 hover:bg-slate-700 text-white font-semibold rounded-lg transition">
                             Proses Impor Masal
                         </button>
@@ -340,10 +390,10 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // DATA STRUCTURE & INITIAL STATE
         let appData = {
             teacher: {
-                name: ''
+                name: '',
+                nip: ''
             },
             classes: [
                 { id: 'c1', name: '10 IPA 1' },
@@ -351,15 +401,15 @@
             ],
             students: {
                 'c1': [
-                    { id: 's1', name: 'Ahmad Fauzi' },
-                    { id: 's2', name: 'Budi Santoso' },
-                    { id: 's3', name: 'Citra Dewi' },
-                    { id: 's4', name: 'Dian Permata' },
-                    { id: 's5', name: 'Eko Prasetyo' }
+                    { id: 's1', nis: '1001', name: 'Ahmad Fauzi' },
+                    { id: 's2', nis: '1002', name: 'Budi Santoso' },
+                    { id: 's3', nis: '1003', name: 'Citra Dewi' },
+                    { id: 's4', nis: '1004', name: 'Dian Permata' },
+                    { id: 's5', nis: '1005', name: 'Eko Prasetyo' }
                 ],
                 'c2': [
-                    { id: 's6', name: 'Fajar Nugraha' },
-                    { id: 's7', name: 'Gita Gutawa' }
+                    { id: 's6', nis: '2001', name: 'Fajar Nugraha' },
+                    { id: 's7', nis: '2002', name: 'Gita Gutawa' }
                 ]
             },
             attendanceRecords: {}
@@ -367,15 +417,12 @@
 
         let activeClassId = 'c1';
 
-        // INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
             loadFromLocalStorage();
             
-            // Set Today's Date
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('attendanceDate').value = today;
 
-            // Check if teacher is already set
             if (appData.teacher && appData.teacher.name) {
                 showMainApp();
             } else {
@@ -389,11 +436,13 @@
         function handleTeacherLogin(e) {
             e.preventDefault();
             const teacherName = document.getElementById('teacherNameInput').value.trim();
+            const teacherNip = document.getElementById('teacherNipInput').value.trim();
 
             if (!teacherName) return;
 
             appData.teacher = {
-                name: teacherName
+                name: teacherName,
+                nip: teacherNip
             };
 
             saveToLocalStorage();
@@ -409,10 +458,11 @@
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
 
-            // Render Teacher Name
-            document.getElementById('displayTeacherName').textContent = `Guru: ${appData.teacher.name}`;
+            const infoText = appData.teacher.nip 
+                ? `${appData.teacher.name} (NIP: ${appData.teacher.nip})`
+                : appData.teacher.name;
+            document.getElementById('displayTeacherInfo').textContent = `Guru: ${infoText}`;
 
-            // Render Select Options & Load Active
             renderClassSelector();
             loadAttendanceForSelectedDate();
             lucide.createIcons();
@@ -420,14 +470,14 @@
 
         function logoutTeacher() {
             if (confirm("Ingin mengganti data guru pengajar?")) {
-                appData.teacher = { name: '' };
+                appData.teacher = { name: '', nip: '' };
                 saveToLocalStorage();
                 document.getElementById('teacherNameInput').value = '';
+                document.getElementById('teacherNipInput').value = '';
                 showLoginScreen();
             }
         }
 
-        // LOCAL STORAGE HANDLERS
         function saveToLocalStorage() {
             localStorage.setItem('ABSKES_DATA', JSON.stringify(appData));
         }
@@ -543,7 +593,7 @@
             }
         }
 
-        // STUDENT ROSTER MANAGEMENT
+        // STUDENT ROSTER MANAGEMENT WITH NIS
         function openStudentModal() {
             const currentClass = appData.classes.find(c => c.id === activeClassId);
             document.getElementById('modalClassNameSub').textContent = `Kelas: ${currentClass ? currentClass.name : '-'}`;
@@ -569,7 +619,10 @@
                 const item = document.createElement('div');
                 item.className = 'flex items-center justify-between p-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition';
                 item.innerHTML = `
-                    <span class="text-sm text-slate-800 dark:text-slate-200 font-medium">${idx + 1}. ${s.name}</span>
+                    <div class="text-sm">
+                        <span class="text-xs font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 mr-2">${s.nis || '-'}</span>
+                        <span class="text-slate-800 dark:text-slate-200 font-medium">${s.name}</span>
+                    </div>
                     <button onclick="deleteStudent('${s.id}')" class="p-1 rounded text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
@@ -580,18 +633,22 @@
         }
 
         function addSingleStudent() {
-            const input = document.getElementById('newStudentInput');
-            const name = input.value.trim();
+            const nisInput = document.getElementById('newStudentNisInput');
+            const nameInput = document.getElementById('newStudentInput');
+            const nis = nisInput.value.trim();
+            const name = nameInput.value.trim();
             if (!name) return;
 
             if (!appData.students[activeClassId]) appData.students[activeClassId] = [];
 
             appData.students[activeClassId].push({
                 id: 's_' + Date.now() + Math.random().toString(36).substr(2, 4),
+                nis: nis || '-',
                 name: name
             });
 
-            input.value = '';
+            nisInput.value = '';
+            nameInput.value = '';
             saveToLocalStorage();
             renderStudentManageList();
             renderStudentList();
@@ -602,14 +659,26 @@
             const text = textarea.value.trim();
             if (!text) return;
 
-            const names = text.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0);
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
             if (!appData.students[activeClassId]) appData.students[activeClassId] = [];
 
-            names.forEach(name => {
-                appData.students[activeClassId].push({
-                    id: 's_' + Date.now() + Math.random().toString(36).substr(2, 4),
-                    name: name
-                });
+            lines.forEach(line => {
+                let nis = '-';
+                let name = line;
+
+                if (line.includes(',')) {
+                    const parts = line.split(',');
+                    nis = parts[0].trim();
+                    name = parts.slice(1).join(',').trim();
+                }
+
+                if (name) {
+                    appData.students[activeClassId].push({
+                        id: 's_' + Date.now() + Math.random().toString(36).substr(2, 4),
+                        nis: nis,
+                        name: name
+                    });
+                }
             });
 
             textarea.value = '';
@@ -625,6 +694,81 @@
                 renderStudentManageList();
                 renderStudentList();
             }
+        }
+
+        // INDIVIDUAL REKAP / REPORT MODAL LOGIC
+        function openStudentReportModal(studentId) {
+            const studentList = appData.students[activeClassId] || [];
+            const student = studentList.find(s => s.id === studentId);
+            if (!student) return;
+
+            document.getElementById('reportStudentName').innerHTML = `<i data-lucide="user" class="w-5 h-5 text-emerald-600"></i> ${student.name}`;
+            document.getElementById('reportStudentNis').textContent = `NIS: ${student.nis || '-'}`;
+
+            let counts = { Hadir: 0, Izin: 0, Sakit: 0, Alfa: 0 };
+            let historyList = [];
+
+            // Loop through all dates for this active class
+            Object.keys(appData.attendanceRecords).forEach(key => {
+                if (key.startsWith(`${activeClassId}_`)) {
+                    const dateStr = key.replace(`${activeClassId}_`, '');
+                    const rec = appData.attendanceRecords[key][studentId];
+                    if (rec) {
+                        counts[rec.status] = (counts[rec.status] || 0) + 1;
+                        historyList.push({
+                            date: dateStr,
+                            status: rec.status,
+                            note: rec.note || ''
+                        });
+                    }
+                }
+            });
+
+            // Sort history by date descending
+            historyList.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const totalDays = historyList.length;
+            const percentage = totalDays > 0 ? Math.round((counts.Hadir / totalDays) * 100) : 0;
+
+            document.getElementById('reportCountHadir').textContent = counts.Hadir;
+            document.getElementById('reportCountIzin').textContent = counts.Izin;
+            document.getElementById('reportCountSakit').textContent = counts.Sakit;
+            document.getElementById('reportCountAlfa').textContent = counts.Alfa;
+            document.getElementById('reportPercentage').textContent = `${percentage}%`;
+
+            const historyContainer = document.getElementById('reportHistoryContainer');
+            historyContainer.innerHTML = '';
+
+            if (historyList.length === 0) {
+                historyContainer.innerHTML = `<div class="p-4 text-xs text-center text-slate-400">Belum ada riwayat absensi tercatat.</div>`;
+            } else {
+                const statusColors = {
+                    Hadir: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300',
+                    Izin: 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300',
+                    Sakit: 'bg-amber-100 text-amber-700 dark:bg-amber-900/60 dark:text-amber-300',
+                    Alfa: 'bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-300'
+                };
+
+                historyList.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center justify-between p-3 text-xs bg-white dark:bg-slate-800';
+                    div.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono text-slate-500">${item.date}</span>
+                            ${item.note ? `<span class="text-slate-400 italic">(${item.note})</span>` : ''}
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full font-bold ${statusColors[item.status]}">${item.status}</span>
+                    `;
+                    historyContainer.appendChild(div);
+                });
+            }
+
+            document.getElementById('studentReportModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeStudentReportModal() {
+            document.getElementById('studentReportModal').classList.add('hidden');
         }
 
         // ATTENDANCE CORE LOGIC
@@ -650,7 +794,9 @@
             const currentRecord = appData.attendanceRecords[recordKey];
             const studentList = appData.students[activeClassId] || [];
 
-            const filteredStudents = studentList.filter(s => s.name.toLowerCase().includes(searchVal));
+            const filteredStudents = studentList.filter(s => 
+                s.name.toLowerCase().includes(searchVal) || (s.nis && s.nis.toLowerCase().includes(searchVal))
+            );
 
             document.getElementById('studentCountBadge').textContent = `${studentList.length} Siswa`;
             tbody.innerHTML = '';
@@ -672,6 +818,7 @@
 
                 tr.innerHTML = `
                     <td class="py-3 px-4 text-center font-medium text-slate-400 text-xs">${index + 1}</td>
+                    <td class="py-3 px-4 font-mono text-xs text-slate-500 font-semibold">${student.nis || '-'}</td>
                     <td class="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100">${student.name}</td>
                     <td class="py-3 px-4 text-center">
                         <div class="inline-flex p-1 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200/80 dark:border-slate-700">
@@ -686,6 +833,11 @@
                             onchange="updateNote('${student.id}', this.value)"
                             placeholder="Tambah catatan..." 
                             class="w-full bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <button onclick="openStudentReportModal('${student.id}')" title="Lihat Rekapan Individu" class="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 rounded-lg transition">
+                            <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -788,7 +940,7 @@
             }
         }
 
-        // EXPORT CSV (Termasuk Nama Guru)
+        // EXPORT CSV (Include NIP & NIS)
         function exportToCSV() {
             const studentList = appData.students[activeClassId] || [];
             if (studentList.length === 0) {
@@ -804,13 +956,14 @@
             let csvContent = "data:text/csv;charset=utf-8,";
             csvContent += `LAPORAN ABSENSI KELAS - ${currentClass ? currentClass.name : ''}\n`;
             csvContent += `Guru Pengajar: ${appData.teacher.name || '-'}\n`;
+            csvContent += `NIP/NIK Guru: ${appData.teacher.nip || '-'}\n`;
             csvContent += `Tanggal: ${date}\n\n`;
-            csvContent += "No,Nama Siswa,Status,Catatan\n";
+            csvContent += "No,NIS,Nama Siswa,Status,Catatan\n";
 
             studentList.forEach((student, index) => {
                 const rec = currentRecord[student.id] || { status: 'Hadir', note: '' };
                 const cleanNote = (rec.note || '').replace(/,/g, ' ');
-                csvContent += `${index + 1},"${student.name}",${rec.status},"${cleanNote}"\n`;
+                csvContent += `${index + 1},"${student.nis || '-'}" "${student.name}",${rec.status},"${cleanNote}"\n`;
             });
 
             const encodedUri = encodeURI(csvContent);
