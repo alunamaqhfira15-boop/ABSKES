@@ -1,1 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajer Toko - Pesanan & Keuangan</title>
+  <style>
+    /* VARIABLES & THEME (Gradasi Biru Laut) */
+    :root {
+      --bg-gradient: linear-gradient(135deg, #03045e 0%, #0077b6 50%, #00b4d8 100%);
+      --card-bg: rgba(3, 25, 52, 0.8);
+      --card-border: rgba(144, 224, 239, 0.25);
+      --primary: #90e0ef;
+      --primary-hover: #48cae4;
+      --text-main: #f1f9ff;
+      --text-sub: #caf0f8;
+      --danger: #ff6b6b;
+      --success: #38d39f;
+    }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      color: var(--text-main);
+    }
+
+    header h1 span {
+      color: var(--primary);
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    /* SUMMARY CARDS */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .summary-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .summary-card label {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .summary-card .value {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .val-in { color: var(--success); }
+    .val-out { color: var(--danger); }
+    .val-net { color: var(--primary); }
+
+    /* MAIN GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* FORM STYLES */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    input {
+      padding: 9px 12px;
+      background: rgba(2, 62, 138, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      background: var(--primary);
+      color: #03045e;
+      border: none;
+      padding: 9px 15px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+    }
+
+    /* LIST STYLES */
+    .item-list {
+      list-style: none;
+      max-height: 250px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .list-item {
+      background: rgba(2, 62, 138, 0.35);
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .item-sub {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+    }
+
+    .item-amount {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .btn-delete {
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-left: 10px;
+    }
+
+    .btn-delete:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Manajer Toko <span>Ku</span></h1>
+      <p>Pencatatan Pesanan, Pembelian Stok & Laporan Keuangan</p>
+    </header>
+
+    <!-- RINGKASAN KEUANGAN -->
+    <div class="summary-grid">
+      <div class="summary-card">
+        <label>Total Pemasukan</label>
+        <div class="value val-in" id="totalIn">Rp 0</div>
+      </div>
+      <div class="summary-card">
+        <label>Total Pengeluaran</label>
+        <div class="value val-out" id="totalOut">Rp 0</div>
+      </div>
+      <div class="summary-card">
+        <label>Laba Bersih</label>
+        <div class="value val-net" id="netProfit">Rp 0</div>
+      </div>
+    </div>
+
+    <!-- UTAMA: PESANAN & BELANJA STOK -->
+    <div class="grid">
+
+      <!-- 1. CATAT PESANAN PEMBELI (PEMASUKAN) -->
+      <div class="card">
+        <div class="card-title">📦 Pesanan Pembeli (Pemasukan)</div>
+
+        <div class="form-group">
+          <input type="text" id="orderCustomer" placeholder="Nama Pembeli">
+          <input type="text" id="orderItem" placeholder="Nama Barang Pesanan">
+          <input type="number" id="orderPrice" placeholder="Total Harga (Rp)">
+          <button class="btn" onclick="addOrder()">+ Tambah Pesanan</button>
+        </div>
+
+        <ul class="item-list" id="orderList">
+          <!-- Item pesanan diisi via JS -->
+        </ul>
+      </div>
+
+      <!-- 2. CATAT BELANJA STOK (PENGELUARAN) -->
+      <div class="card">
+        <div class="card-title">🛒 Stok Yang Harus Dibeli (Pengeluaran)</div>
+
+        <div class="form-group">
+          <input type="text" id="buyItem" placeholder="Nama Barang / Stok">
+          <input type="number" id="buyQty" placeholder="Jumlah (misal: 5)">
+          <input type="number" id="buyPrice" placeholder="Perkiraan Total Biaya (Rp)">
+          <button class="btn" onclick="addBuyItem()">+ Tambah Daftar Belanja</button>
+        </div>
+
+        <ul class="item-list" id="buyList">
+          <!-- Item belanja diisi via JS -->
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================
+       DATABASE LOCALSTORAGE
+       ========================================== */
+    let orders = JSON.parse(localStorage.getItem('toko_orders')) || [];
+    let buyItems = JSON.parse(localStorage.getItem('toko_buys')) || [];
+
+    /* ==========================================
+       HITUNG KEUANGAN
+       ========================================== */
+    function updateFinancials() {
+      const totalIn = orders.reduce((sum, item) => sum + item.price, 0);
+      const totalOut = buyItems.reduce((sum, item) => sum + item.price, 0);
+      const net = totalIn - totalOut;
+
+      document.getElementById('totalIn').innerText = `Rp ${totalIn.toLocaleString('id-ID')}`;
+      document.getElementById('totalOut').innerText = `Rp ${totalOut.toLocaleString('id-ID')}`;
+      
+      const netEl = document.getElementById('netProfit');
+      netEl.innerText = `Rp ${net.toLocaleString('id-ID')}`;
+      if (net < 0) {
+        netEl.style.color = 'var(--danger)';
+      } else {
+        netEl.style.color = 'var(--primary)';
+      }
+    }
+
+    /* ==========================================
+       KELOLA PESANAN PEMBELI
+       ========================================== */
+    function renderOrders() {
+      const list = document.getElementById('orderList');
+      list.innerHTML = '';
+
+      if (orders.length === 0) {
+        list.innerHTML = '<li style="color:var(--text-sub); font-size:0.85rem; text-align:center;">Belum ada pesanan masuk.</li>';
+        return;
+      }
+
+      orders.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'list-item';
+        li.innerHTML = `
+          <div class="item-info">
+            <span class="item-title">${item.customer} - ${item.item}</span>
+            <span class="item-sub">Pemasukan Pesanan</span>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <span class="item-amount val-in">+Rp ${item.price.toLocaleString('id-ID')}</span>
+            <button class="btn-delete" onclick="deleteOrder(${index})">✕</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function addOrder() {
+      const customer = document.getElementById('orderCustomer').value.trim();
+      const item = document.getElementById('orderItem').value.trim();
+      const price = parseInt(document.getElementById('orderPrice').value);
+
+      if (!customer || !item || isNaN(price)) {
+        alert('Mohon isi nama pembeli, nama barang, dan harga dengan benar!');
+        return;
+      }
+
+      orders.push({ customer, item, price });
+      localStorage.setItem('toko_orders', JSON.stringify(orders));
+
+      document.getElementById('orderCustomer').value = '';
+      document.getElementById('orderItem').value = '';
+      document.getElementById('orderPrice').value = '';
+
+      renderOrders();
+      updateFinancials();
+    }
+
+    function deleteOrder(index) {
+      orders.splice(index, 1);
+      localStorage.setItem('toko_orders', JSON.stringify(orders));
+      renderOrders();
+      updateFinancials();
+    }
+
+    /* ==========================================
+       KELOLA BELANJA STOK
+       ========================================== */
+    function renderBuyItems() {
+      const list = document.getElementById('buyList');
+      list.innerHTML = '';
+
+      if (buyItems.length === 0) {
+        list.innerHTML = '<li style="color:var(--text-sub); font-size:0.85rem; text-align:center;">Daftar belanjaan stok kosong.</li>';
+        return;
+      }
+
+      buyItems.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'list-item';
+        li.innerHTML = `
+          <div class="item-info">
+            <span class="item-title">${item.item} (${item.qty} pcs)</span>
+            <span class="item-sub">Pengeluaran Stok</span>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <span class="item-amount val-out">-Rp ${item.price.toLocaleString('id-ID')}</span>
+            <button class="btn-delete" onclick="deleteBuyItem(${index})">✕</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function addBuyItem() {
+      const item = document.getElementById('buyItem').value.trim();
+      const qty = parseInt(document.getElementById('buyQty').value) || 1;
+      const price = parseInt(document.getElementById('buyPrice').value);
+
+      if (!item || isNaN(price)) {
+        alert('Mohon isi nama barang dan estimasi harga belanja!');
+        return;
+      }
+
+      buyItems.push({ item, qty, price });
+      localStorage.setItem('toko_buys', JSON.stringify(buyItems));
+
+      document.getElementById('buyItem').value = '';
+      document.getElementById('buyQty').value = '';
+      document.getElementById('buyPrice').value = '';
+
+      renderBuyItems();
+      updateFinancials();
+    }
+
+    function deleteBuyItem(index) {
+      buyItems.splice(index, 1);
+      localStorage.setItem('toko_buys', JSON.stringify(buyItems));
+      renderBuyItems();
+      updateFinancials();
+    }
+
+    // Inisialisasi awal
+    renderOrders();
+    renderBuyItems();
+    updateFinancials();
+  </script>
+</body>
+</html>
