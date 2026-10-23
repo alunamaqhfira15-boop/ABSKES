@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Lounge - Music Genre, Timer & Notes</title>
+  <title>Study Lounge - Multi-Genre Playlist, Timer & Notes</title>
   <style>
     :root {
       --bg-gradient: linear-gradient(135deg, #0f172a, #1e1b4b, #311042);
@@ -144,11 +144,35 @@
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
     }
 
-    /* Music Player Styles */
+    /* Genre & Music Player Styles */
     .music-card h2, .notes-card h2 {
       font-size: 1.2rem;
       margin-bottom: 12px;
       color: var(--accent-purple);
+    }
+
+    .genre-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .genre-btn {
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: rgba(0, 0, 0, 0.3);
+      color: var(--text-sub);
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .genre-btn.active, .genre-btn:hover {
+      background: var(--accent-purple);
+      color: white;
     }
 
     .track-list {
@@ -156,15 +180,15 @@
       flex-direction: column;
       gap: 8px;
       margin-bottom: 15px;
-      max-height: 220px;
+      max-height: 180px;
       overflow-y: auto;
       padding-right: 5px;
     }
 
-    /* Scrollbar Kustom */
     .track-list::-webkit-scrollbar {
-      width: 6px;
+      width: 5px;
     }
+
     .track-list::-webkit-scrollbar-thumb {
       background: var(--accent-purple);
       border-radius: 4px;
@@ -191,13 +215,10 @@
       border-color: var(--accent-pink);
     }
 
-    .genre-badge {
-      font-size: 0.75rem;
-      padding: 2px 8px;
-      border-radius: 6px;
+    .playing-indicator {
+      font-size: 0.8rem;
+      color: var(--accent-pink);
       font-weight: bold;
-      background: rgba(255, 255, 255, 0.15);
-      color: var(--accent-yellow);
     }
 
     /* Notes Styles */
@@ -235,8 +256,8 @@
 <body>
 
   <div class="title-section">
-    <h1>🎧 Study Lounge Multi-Genre</h1>
-    <p>Atur timer belajarmu, pilih genre musik favoritmu, dan catat materi penting!</p>
+    <h1>🎧 Study Lounge Multi-Genre & Playlist</h1>
+    <p>Atur timer belajarmu, pilih genre & lagu favoritmu, dan catat materi penting!</p>
   </div>
 
   <div class="app-container">
@@ -258,12 +279,20 @@
       </div>
     </div>
 
-    <!-- 2. PEMUTAR LAGU DENGAN GENRE LENGKAP -->
+    <!-- 2. PEMUTAR LAGU DENGAN KATEGORI GENRE & PILIHAN LAGU -->
     <div class="glass-card music-card">
-      <h2>🎵 Pilihan Genre Musik</h2>
-      <div class="track-list" id="trackList">
-        <!-- List lagu akan diisi via JavaScript -->
+      <h2>🎵 Pilihan Genre & Lagu</h2>
+      
+      <!-- Tombol Kategori Genre -->
+      <div class="genre-tabs" id="genreTabs">
+        <!-- Generat via JS -->
       </div>
+
+      <!-- Daftar Lagu Sesuai Genre yang Dipilih -->
+      <div class="track-list" id="trackList">
+        <!-- List lagu diisi via JS -->
+      </div>
+
       <div style="display: flex; gap: 8px;">
         <button class="btn" id="playMusicBtn" onclick="togglePlayMusic()">▶ Putar Musik</button>
         <button class="btn" onclick="stopMusic()">⏹ Berhenti</button>
@@ -341,51 +370,108 @@
     }
 
     /* ==========================================
-       2. PLAYLIST DENGAN GENRE VARIASI LENGKAP
+       2. DATABASE LAGU PER GENRE
        ========================================== */
-    const playlist = [
-      { genre: "POP", title: "Upbeat Acoustic Pop", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-      { genre: "DANGDUT", title: "Santai Kendang Rhythm", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
-      { genre: "HIP HOP", title: "Lo-Fi Boom Bap Beat", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-      { genre: "REGGAE", title: "Island Beach Vibe Reggae", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
-      { genre: "ROCK", title: "Energetic Guitar Rock", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-      { genre: "KLASIK", title: "Mozart Calm Piano & Strings", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
-    ];
+    const songsData = {
+      POP: [
+        { title: "Teh Hijau", src: "https://youtu.be/RO75uUZiAw0?si=Y5bnAaAHG6gKMcGy" },
+        { title: "Sesi Potret", src: "https://youtu.be/Nskf70DMR60?si=7gusnYtg8Nph1hWP" },
+        { title: "Dunia Yang Nanti", src: "https://youtu.be/awWKxGftWh4?si=ADgu680HmAlumafq" },
+        { title: "IQRO", src: "https://youtu.be/9WHWkEJLKJM?si=xE8d4we13dNQhgev" },
+        { title: "Ini Abadi", src: "https://youtu.be/qQDaxjLReck?si=F0kQ16j-Q1FLp_w2" },
+        { title: "Bergema Sampai Selamanya", src: "https://youtu.be/g0c7FeMn5lE?si=NIOLP8KEWxUvbMzM" },
+        { title: "Dan", src: "https://youtu.be/fDkI5BvWQU8?si=5M2hMzuHfVGVNx02" },
+        { title: "Jatuh Suka", src: "https://youtu.be/2uJut6USftQ?si=-jCcO3hm-hxyctiT" }
+      ],
+      DANGDUT: [
+        { title: "Dirantai Digelang Rindu", src: "https://youtu.be/rCJwHEf6UjY?si=F25nRdL4Dk9M6Ef6" },
+        { title: "Mimpi Manis", src: "https://youtu.be/-QfSwSM1F-c?si=yh_X5Noz-mYhNbtD" },
+        { title: "Kucing Garong", src: "https://youtu.be/WqX7CUmf3t8?si=4LPrdKlcocCPDvkZ" },
+        { title: "Angel 2", src: "https://youtu.be/1WeCPL58Ijg?si=yxwt8keG_JJlxdU9" }
+      ],
+      "HIP HOP": [
+        { title: "Lo-Fi Boom Bap Beat", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+        { title: "Midnight Chillhop Groove", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+        { title: "Study Lofi Hip Hop", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" }
+      ],
+      REGGAE: [
+        { title: "Island Beach Vibe Reggae", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+        { title: "Sunny Jam Reggae", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
+        { title: "Roots Reggae Relax", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" }
+      ],
+      ROCK: [
+        { title: "Soft Classic Rock Ballad", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+        { title: "Energetic Guitar Riff", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3" },
+        { title: "Indie Rock Ambient", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3" }
+      ],
+      KLASIK: [
+        { title: "Mozart Calm Piano & Strings", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+        { title: "Beethoven Moonlight Vibe", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" },
+        { title: "Chopin Soft Nocturne", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3" }
+      ]
+    };
 
-    let currentTrackIndex = 0;
+    let selectedGenre = "POP";
+    let currentPlayingTrack = null;
     let audioElement = new Audio();
     audioElement.loop = true;
     let isMusicPlaying = false;
 
+    const genreTabsEl = document.getElementById('genreTabs');
     const trackListEl = document.getElementById('trackList');
     const playMusicBtn = document.getElementById('playMusicBtn');
 
-    function renderPlaylist() {
+    // Tampilkan Tab Genre
+    function renderGenreTabs() {
+      genreTabsEl.innerHTML = '';
+      Object.keys(songsData).forEach(genre => {
+        const btn = document.createElement('button');
+        btn.className = `genre-btn ${genre === selectedGenre ? 'active' : ''}`;
+        btn.innerText = genre;
+        btn.onclick = () => {
+          selectedGenre = genre;
+          renderGenreTabs();
+          renderTrackList();
+        };
+        genreTabsEl.appendChild(btn);
+      });
+    }
+
+    // Tampilkan Daftar Lagu berdasarkan Genre
+    function renderTrackList() {
       trackListEl.innerHTML = '';
-      playlist.forEach((track, index) => {
+      const songs = songsData[selectedGenre];
+
+      songs.forEach((song) => {
+        const isThisPlaying = currentPlayingTrack && currentPlayingTrack.src === song.src && isMusicPlaying;
         const item = document.createElement('div');
-        item.className = `track-item ${index === currentTrackIndex ? 'playing' : ''}`;
+        item.className = `track-item ${isThisPlaying ? 'playing' : ''}`;
         item.innerHTML = `
-          <span>🎵 ${track.title}</span>
-          <span class="genre-badge">${track.genre}</span>
+          <span>🎵 ${song.title}</span>
+          ${isThisPlaying ? '<span class="playing-indicator">🔊 Diputar</span>' : ''}
         `;
-        item.onclick = () => selectTrack(index);
+        item.onclick = () => playSong(song);
         trackListEl.appendChild(item);
       });
     }
 
-    function selectTrack(index) {
-      currentTrackIndex = index;
-      audioElement.src = playlist[index].src;
+    function playSong(song) {
+      if (currentPlayingTrack && currentPlayingTrack.src === song.src) {
+        togglePlayMusic();
+        return;
+      }
+      currentPlayingTrack = song;
+      audioElement.src = song.src;
       audioElement.play();
       isMusicPlaying = true;
       playMusicBtn.innerText = '⏸ Jeda Musik';
-      renderPlaylist();
+      renderTrackList();
     }
 
     function togglePlayMusic() {
-      if (!audioElement.src) {
-        selectTrack(0);
+      if (!currentPlayingTrack) {
+        // Jika belum ada lagu yang dipilih, putar lagu pertama di genre saat ini
+        playSong(songsData[selectedGenre][0]);
         return;
       }
       if (isMusicPlaying) {
@@ -397,16 +483,20 @@
         isMusicPlaying = true;
         playMusicBtn.innerText = '⏸ Jeda Musik';
       }
+      renderTrackList();
     }
 
     function stopMusic() {
       audioElement.pause();
       audioElement.currentTime = 0;
       isMusicPlaying = false;
+      currentPlayingTrack = null;
       playMusicBtn.innerText = '▶ Putar Musik';
+      renderTrackList();
     }
 
-    renderPlaylist();
+    renderGenreTabs();
+    renderTrackList();
 
     /* ==========================================
        3. BUKU CATATAN SISWA (LOCAL STORAGE)
