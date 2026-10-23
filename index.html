@@ -1,0 +1,502 @@
+<!DOCTYPE1 html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boba Tap & Retro Runner - Game Anak Sekolah</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-purple: #a855f7;
+      --accent-pink: #ec4899;
+      --accent-yellow: #eab308;
+      --text-light: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 5px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    /* Tab Switcher */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: rgba(0,0,0,0.2);
+      padding: 5px;
+      border-radius: 12px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-purple);
+      color: white;
+    }
+
+    .game-section {
+      display: none;
+    }
+
+    .game-section.active {
+      display: block;
+    }
+
+    /* Game 1: Boba Tap Style */
+    .boba-display {
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .score-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--accent-yellow);
+    }
+
+    .cps-title {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+    }
+
+    .boba-btn {
+      font-size: 5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.1s;
+      outline: none;
+      filter: drop-shadow(0 10px 15px rgba(168, 85, 247, 0.4));
+    }
+
+    .boba-btn:active {
+      transform: scale(0.85);
+    }
+
+    .upgrades {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .upgrade-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 15px;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .upgrade-btn:hover:not(:disabled) {
+      background: rgba(168, 85, 247, 0.2);
+    }
+
+    .upgrade-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Game 2: Runner Canvas */
+    canvas {
+      background: #000;
+      border-radius: 12px;
+      width: 100%;
+      height: 200px;
+      display: block;
+      margin-bottom: 15px;
+    }
+
+    .runner-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .action-btn {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: opacity 0.2s;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Floating Score Effect */
+    .floating-text {
+      position: absolute;
+      color: var(--accent-yellow);
+      font-weight: bold;
+      font-size: 1.5rem;
+      pointer-events: none;
+      animation: floatUp 0.8s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-50px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Arcade Pelajar</h1>
+    <p class="subtitle">Istirahat sejenak & kumpulkan skor tertinggi!</p>
+
+    <!-- Navigasi Tab Game -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('boba')">🧋 Boba Tap</button>
+      <button class="tab-btn" onclick="switchTab('runner')">🏃 Retro Runner</button>
+    </div>
+
+    <!-- GAME 1: BOBA TAP -->
+    <div id="boba-game" class="game-section active">
+      <div class="score-title" id="boba-count">0</div>
+      <div class="cps-title">Boba / Detik: <span id="cps-val">0</span></div>
+
+      <div class="boba-display" id="boba-area">
+        <button class="boba-btn" id="tap-btn">🧋</button>
+      </div>
+
+      <div class="upgrades">
+        <button class="upgrade-btn" id="upg-click" onclick="buyClick()">
+          <span>👆 Sedotan Pro (+1/klik)</span>
+          <span id="cost-click">10 Boba</span>
+        </button>
+        <button class="upgrade-btn" id="upg-auto" onclick="buyAuto()">
+          <span>🤖 Robot Penyedot (+1/detik)</span>
+          <span id="cost-auto">50 Boba</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- GAME 2: RETRO RUNNER -->
+    <div id="runner-game" class="game-section">
+      <canvas id="runnerCanvas" width="450" height="200"></canvas>
+      <div class="runner-controls">
+        <button class="action-btn" id="start-runner-btn" onclick="startRunner()">Mulai Game</button>
+        <button class="action-btn" onclick="jumpRunner()">Lompat (Spasi)</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ------------------------------------
+       AUDIO SYNTHESIZER (Tanpa File MP3)
+    ------------------------------------ */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playSound(freq, type = 'sine', duration = 0.1) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    /* ------------------------------------
+       TAB SWITCHING
+    ------------------------------------ */
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.game-section').forEach(sec => sec.classList.remove('active'));
+
+      if (tab === 'boba') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('boba-game').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('runner-game').classList.add('active');
+        initRunnerCanvas();
+      }
+    }
+
+    /* ------------------------------------
+       GAME 1: BOBA CLICKER LOGIC
+    ------------------------------------ */
+    let boba = parseInt(localStorage.getItem('boba_score')) || 0;
+    let clickPower = parseInt(localStorage.getItem('boba_power')) || 1;
+    let autoPower = parseInt(localStorage.getItem('boba_auto')) || 0;
+
+    let costClick = 10 * Math.pow(1.5, clickPower - 1);
+    let costAuto = 50 * Math.pow(1.5, autoPower);
+
+    const bobaCountEl = document.getElementById('boba-count');
+    const cpsValEl = document.getElementById('cps-val');
+    const tapBtn = document.getElementById('tap-btn');
+    const upgClickBtn = document.getElementById('upg-click');
+    const upgAutoBtn = document.getElementById('upg-auto');
+
+    function updateBobaUI() {
+      bobaCountEl.innerText = Math.floor(boba);
+      cpsValEl.innerText = autoPower;
+      
+      document.getElementById('cost-click').innerText = Math.floor(costClick) + " Boba";
+      document.getElementById('cost-auto').innerText = Math.floor(costAuto) + " Boba";
+
+      upgClickBtn.disabled = boba < costClick;
+      upgAutoBtn.disabled = boba < costAuto;
+
+      // Save progress
+      localStorage.setItem('boba_score', boba);
+      localStorage.setItem('boba_power', clickPower);
+      localStorage.setItem('boba_auto', autoPower);
+    }
+
+    tapBtn.addEventListener('click', (e) => {
+      boba += clickPower;
+      playSound(400 + Math.random() * 200, 'sine', 0.08);
+      createFloatingText(`+${clickPower}`, e.clientX, e.clientY);
+      updateBobaUI();
+    });
+
+    function buyClick() {
+      if (boba >= costClick) {
+        boba -= costClick;
+        clickPower++;
+        costClick *= 1.5;
+        playSound(600, 'triangle', 0.15);
+        updateBobaUI();
+      }
+    }
+
+    function buyAuto() {
+      if (boba >= costAuto) {
+        boba -= costAuto;
+        autoPower++;
+        costAuto *= 1.5;
+        playSound(800, 'triangle', 0.15);
+        updateBobaUI();
+      }
+    }
+
+    // Auto Clicker Interval (1 detik)
+    setInterval(() => {
+      if (autoPower > 0) {
+        boba += autoPower;
+        updateBobaUI();
+      }
+    }, 1000);
+
+    function createFloatingText(text, x, y) {
+      const el = document.createElement('div');
+      el.className = 'floating-text';
+      el.innerText = text;
+      el.style.left = `${x - 15}px`;
+      el.style.top = `${y - 30}px`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 800);
+    }
+
+    updateBobaUI();
+
+    /* ------------------------------------
+       GAME 2: RETRO RUNNER LOGIC (CANVAS)
+    ------------------------------------ */
+    const canvas = document.getElementById('runnerCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let runnerPlaying = false;
+    let score = 0;
+    let highScore = localStorage.getItem('runner_hi') || 0;
+    let animationFrame;
+
+    let player = { x: 50, y: 140, w: 20, h: 30, dy: 0, gravity: 0.6, jumped: false };
+    let obstacles = [];
+    let frameCount = 0;
+
+    function initRunnerCanvas() {
+      ctx.fillStyle = "#1e293b";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "14px Segoe UI";
+      ctx.textAlign = "center";
+      ctx.fillText("Tekan 'Mulai Game' atau Spasi untuk Melompat", canvas.width / 2, canvas.height / 2);
+    }
+
+    function startRunner() {
+      if (runnerPlaying) return;
+      runnerPlaying = true;
+      score = 0;
+      obstacles = [];
+      player.y = 140;
+      player.dy = 0;
+      document.getElementById('start-runner-btn').innerText = "Main Lagi";
+      gameLoop();
+    }
+
+    function jumpRunner() {
+      if (!runnerPlaying) {
+        startRunner();
+        return;
+      }
+      if (!player.jumped) {
+        player.dy = -10;
+        player.jumped = true;
+        playSound(300, 'square', 0.1);
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && document.getElementById('runner-game').classList.contains('active')) {
+        e.preventDefault();
+        jumpRunner();
+      }
+    });
+
+    function gameLoop() {
+      if (!runnerPlaying) return;
+
+      frameCount++;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Background & Tanah
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#a855f7";
+      ctx.fillRect(0, 170, canvas.width, 30);
+
+      // Player Physics
+      player.dy += player.gravity;
+      player.y += player.dy;
+
+      if (player.y >= 140) {
+        player.y = 140;
+        player.dy = 0;
+        player.jumped = false;
+      }
+
+      // Draw Player (Karakter Kotak Neon)
+      ctx.fillStyle = "#ec4899";
+      ctx.fillRect(player.x, player.y, player.w, player.h);
+
+      // Spawning Rintangan (Buku / Tugas)
+      if (frameCount % 90 === 0) {
+        obstacles.push({ x: canvas.width, w: 15, h: 25 + Math.random() * 15 });
+      }
+
+      // Update & Draw Obstacles
+      for (let i = 0; i < obstacles.length; i++) {
+        let obs = obstacles[i];
+        obs.x -= 4;
+
+        ctx.fillStyle = "#eab308";
+        ctx.fillRect(obs.x, 170 - obs.h, obs.w, obs.h);
+
+        // Collision Detection
+        if (
+          player.x < obs.x + obs.w &&
+          player.x + player.w > obs.x &&
+          player.y < 170 &&
+          player.y + player.h > 170 - obs.h
+        ) {
+          // Game Over
+          runnerPlaying = false;
+          playSound(150, 'sawtooth', 0.3);
+          if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('runner_hi', highScore);
+          }
+          
+          ctx.fillStyle = "rgba(0,0,0,0.7)";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#f8fafc";
+          ctx.font = "20px Segoe UI";
+          ctx.textAlign = "center";
+          ctx.fillText("GAME OVER!", canvas.width / 2, 80);
+          ctx.fillText(`Skor: ${score} | High Score: ${highScore}`, canvas.width / 2, 120);
+          return;
+        }
+      }
+
+      // Clean obstacles
+      obstacles = obstacles.filter(obs => obs.x + obs.w > 0);
+
+      // Score
+      score++;
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "12px Segoe UI";
+      ctx.textAlign = "left";
+      ctx.fillText(`Skor: ${score}`, 15, 25);
+      ctx.fillText(`High Score: ${highScore}`, 15, 45);
+
+      animationFrame = requestAnimationFrame(gameLoop);
+    }
+
+    // Inisialisasi tampilan awal
+    initRunnerCanvas();
+  </script>
+</body>
+</html>
