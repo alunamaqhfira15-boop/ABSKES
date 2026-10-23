@@ -1,438 +1,745 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manajer Toko - Pesanan & Keuangan</title>
-  <style>
-    /* VARIABLES & THEME (Gradasi Biru Laut) */
-    :root {
-      --bg-gradient: linear-gradient(135deg, #03045e 0%, #0077b6 50%, #00b4d8 100%);
-      --card-bg: rgba(3, 25, 52, 0.8);
-      --card-border: rgba(144, 224, 239, 0.25);
-      --primary: #90e0ef;
-      --primary-hover: #48cae4;
-      --text-main: #f1f9ff;
-      --text-sub: #caf0f8;
-      --danger: #ff6b6b;
-      --success: #38d39f;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background: var(--bg-gradient);
-      background-attachment: fixed;
-      color: var(--text-main);
-      min-height: 100vh;
-      padding: 20px 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1000px;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    header h1 {
-      font-size: 1.8rem;
-      color: var(--text-main);
-    }
-
-    header h1 span {
-      color: var(--primary);
-    }
-
-    header p {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-    }
-
-    /* SUMMARY CARDS */
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    @media (max-width: 600px) {
-      .summary-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .summary-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 15px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-    }
-
-    .summary-card label {
-      font-size: 0.8rem;
-      color: var(--text-sub);
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .summary-card .value {
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
-    .val-in { color: var(--success); }
-    .val-out { color: var(--danger); }
-    .val-net { color: var(--primary); }
-
-    /* MAIN GRID */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 15px;
-      color: var(--primary);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    /* FORM STYLES */
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 15px;
-    }
-
-    input {
-      padding: 9px 12px;
-      background: rgba(2, 62, 138, 0.4);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      color: var(--text-main);
-      font-size: 0.85rem;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: var(--primary);
-    }
-
-    .btn {
-      background: var(--primary);
-      color: #03045e;
-      border: none;
-      padding: 9px 15px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn:hover {
-      background: var(--primary-hover);
-    }
-
-    /* LIST STYLES */
-    .item-list {
-      list-style: none;
-      max-height: 250px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .list-item {
-      background: rgba(2, 62, 138, 0.35);
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--card-border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .item-info {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .item-title {
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .item-sub {
-      font-size: 0.75rem;
-      color: var(--text-sub);
-    }
-
-    .item-amount {
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-
-    .btn-delete {
-      background: transparent;
-      border: none;
-      color: var(--danger);
-      cursor: pointer;
-      font-size: 0.9rem;
-      margin-left: 10px;
-    }
-
-    .btn-delete:hover {
-      opacity: 0.8;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABSKES - Aplikasi Absensi Kelas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200">
 
-  <div class="container">
-    <header>
-      <h1>Manajer Toko <span>Ku</span></h1>
-      <p>Pencatatan Pesanan, Pembelian Stok & Laporan Keuangan</p>
-    </header>
+    <!-- NAVIGATION BAR -->
+    <nav class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-tr from-emerald-600 to-teal-500 p-2.5 rounded-xl text-white shadow-md shadow-emerald-500/20">
+                        <i data-lucide="clipboard-check" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                            ABSKES
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">v2.0</span>
+                        </h1>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium hidden sm:block">Aplikasi Absensi Kelas Digital</p>
+                    </div>
+                </div>
 
-    <!-- RINGKASAN KEUANGAN -->
-    <div class="summary-grid">
-      <div class="summary-card">
-        <label>Total Pemasukan</label>
-        <div class="value val-in" id="totalIn">Rp 0</div>
-      </div>
-      <div class="summary-card">
-        <label>Total Pengeluaran</label>
-        <div class="value val-out" id="totalOut">Rp 0</div>
-      </div>
-      <div class="summary-card">
-        <label>Laba Bersih</label>
-        <div class="value val-net" id="netProfit">Rp 0</div>
-      </div>
-    </div>
+                <!-- Right Tools -->
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <!-- Class Selector -->
+                    <div class="relative">
+                        <select id="classSelector" onchange="changeActiveClass()" class="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 text-sm font-semibold rounded-lg pl-9 pr-8 py-2 border-0 focus:ring-2 focus:ring-emerald-500 cursor-pointer appearance-none shadow-inner">
+                        </select>
+                        <i data-lucide="school" class="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none"></i>
+                        <i data-lucide="chevron-down" class="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none"></i>
+                    </div>
 
-    <!-- UTAMA: PESANAN & BELANJA STOK -->
-    <div class="grid">
+                    <!-- Manage Classes Button -->
+                    <button onclick="openClassModal()" class="p-2 sm:px-3 sm:py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
+                        <i data-lucide="folder-cog" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+                        <span class="hidden md:inline">Kelas</span>
+                    </button>
 
-      <!-- 1. CATAT PESANAN PEMBELI (PEMASUKAN) -->
-      <div class="card">
-        <div class="card-title">📦 Pesanan Pembeli (Pemasukan)</div>
+                    <!-- Manage Roster Button -->
+                    <button onclick="openStudentModal()" class="p-2 sm:px-3 sm:py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
+                        <i data-lucide="users" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+                        <span class="hidden md:inline">Siswa</span>
+                    </button>
 
-        <div class="form-group">
-          <input type="text" id="orderCustomer" placeholder="Nama Pembeli">
-          <input type="text" id="orderItem" placeholder="Nama Barang Pesanan">
-          <input type="number" id="orderPrice" placeholder="Total Harga (Rp)">
-          <button class="btn" onclick="addOrder()">+ Tambah Pesanan</button>
+                    <!-- Dark Mode Toggle -->
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                        <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+        <!-- HEADER CONTROLS (Date, Status Filter, Export) -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Date Picker -->
+                <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-700/60 px-3 py-2 rounded-xl text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
+                    <i data-lucide="calendar" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+                    <input type="date" id="attendanceDate" onchange="loadAttendanceForSelectedDate()" class="bg-transparent text-sm font-semibold focus:outline-none cursor-pointer">
+                </div>
+
+                <!-- Search Student -->
+                <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" oninput="renderStudentList()" placeholder="Cari siswa..." class="pl-9 pr-3 py-2 bg-slate-100 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-44 sm:w-60">
+                </div>
+            </div>
+
+            <!-- Global Action Buttons -->
+            <div class="flex items-center gap-2 flex-wrap">
+                <button onclick="markAll('Hadir')" class="px-3 py-2 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60 transition border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                    <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Semua Hadir
+                </button>
+                <button onclick="exportToCSV()" class="px-3 py-2 text-xs font-semibold rounded-lg bg-slate-800 text-white hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 transition shadow-sm flex items-center gap-1.5">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Ekspor CSV
+                </button>
+            </div>
         </div>
 
-        <ul class="item-list" id="orderList">
-          <!-- Item pesanan diisi via JS -->
-        </ul>
-      </div>
+        <!-- STATS ANALYTICS DASHBOARD -->
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <!-- Total -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
+                <div class="p-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Siswa</p>
+                    <h3 id="statTotal" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
+                </div>
+            </div>
 
-      <!-- 2. CATAT BELANJA STOK (PENGELUARAN) -->
-      <div class="card">
-        <div class="card-title">🛒 Stok Yang Harus Dibeli (Pengeluaran)</div>
+            <!-- Hadir -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
+                <div class="p-3 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-xl">
+                    <i data-lucide="user-check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Hadir</p>
+                    <h3 id="statHadir" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
+                </div>
+            </div>
 
-        <div class="form-group">
-          <input type="text" id="buyItem" placeholder="Nama Barang / Stok">
-          <input type="number" id="buyQty" placeholder="Jumlah (misal: 5)">
-          <input type="number" id="buyPrice" placeholder="Perkiraan Total Biaya (Rp)">
-          <button class="btn" onclick="addBuyItem()">+ Tambah Daftar Belanja</button>
+            <!-- Izin -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
+                <div class="p-3 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl">
+                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Izin</p>
+                    <h3 id="statIzin" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
+                </div>
+            </div>
+
+            <!-- Sakit -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3">
+                <div class="p-3 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl">
+                    <i data-lucide="thermometer" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Sakit</p>
+                    <h3 id="statSakit" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
+                </div>
+            </div>
+
+            <!-- Alfa -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-3 col-span-2 sm:col-span-1">
+                <div class="p-3 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 rounded-xl">
+                    <i data-lucide="user-x" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider">Alfa</p>
+                    <h3 id="statAlfa" class="text-xl font-bold text-slate-900 dark:text-white">0</h3>
+                </div>
+            </div>
         </div>
 
-        <ul class="item-list" id="buyList">
-          <!-- Item belanja diisi via JS -->
-        </ul>
-      </div>
+        <!-- PROGRESS BAR -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-600 dark:text-slate-300 tracking-wide uppercase">Persentase Kehadiran Kelas</span>
+                <span id="statPercent" class="text-sm font-bold text-emerald-600 dark:text-emerald-400">0%</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-700 h-3 rounded-full overflow-hidden flex">
+                <div id="barHadir" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+                <div id="barIzin" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div>
+                <div id="barSakit" class="bg-amber-500 h-full transition-all duration-500" style="width: 0%"></div>
+                <div id="barAlfa" class="bg-rose-500 h-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
 
+        <!-- STUDENT ROSTER & ATTENDANCE TABLE -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+                <h2 id="currentClassTitle" class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="list-checks" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i> Daftar Kehadiran Siswa
+                </h2>
+                <span id="studentCountBadge" class="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">0 Siswa</span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                            <th class="py-3.5 px-4 w-12 text-center">No</th>
+                            <th class="py-3.5 px-4">Nama Siswa</th>
+                            <th class="py-3.5 px-4 text-center">Status Kehadiran</th>
+                            <th class="py-3.5 px-4">Keterangan / Catatan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/60 text-sm">
+                        <!-- Student Rows dynamically rendered here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden p-12 text-center">
+                <i data-lucide="user-x" class="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3"></i>
+                <h3 class="text-base font-semibold text-slate-700 dark:text-slate-300">Belum ada siswa di kelas ini</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">Klik tombol "Kelola Siswa" di bagian atas untuk menambahkan daftar siswa baru.</p>
+                <button onclick="openStudentModal()" class="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition shadow-sm inline-flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i> Tambah Siswa Sekarang
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL: KELOLA KELAS -->
+    <div id="classModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden transform transition-all">
+            <div class="p-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="school" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i> Kelola Daftar Kelas
+                </h3>
+                <button onclick="closeClassModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-5 space-y-4">
+                <!-- Add New Class Input -->
+                <div class="flex gap-2">
+                    <input type="text" id="newClassNameInput" placeholder="Contoh: 10 IPA 1" class="flex-1 px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <button onclick="addNewClass()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition flex items-center gap-1">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Tambah
+                    </button>
+                </div>
+
+                <!-- Existing Classes List -->
+                <div class="border border-slate-200 dark:border-slate-700 rounded-xl divide-y divide-slate-100 dark:divide-slate-700 max-h-60 overflow-y-auto" id="classListContainer">
+                    <!-- Dynamic class items -->
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script>
-    /* ==========================================
-       DATABASE LOCALSTORAGE
-       ========================================== */
-    let orders = JSON.parse(localStorage.getItem('toko_orders')) || [];
-    let buyItems = JSON.parse(localStorage.getItem('toko_buys')) || [];
+    <!-- MODAL: KELOLA SISWA -->
+    <div id="studentModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div class="p-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i data-lucide="users" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i> Kelola Siswa
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" id="modalClassNameSub">Kelas: -</p>
+                </div>
+                <button onclick="closeStudentModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
 
-    /* ==========================================
-       HITUNG KEUANGAN
-       ========================================== */
-    function updateFinancials() {
-      const totalIn = orders.reduce((sum, item) => sum + item.price, 0);
-      const totalOut = buyItems.reduce((sum, item) => sum + item.price, 0);
-      const net = totalIn - totalOut;
+            <div class="p-5 space-y-4">
+                <!-- Single Add Input -->
+                <div class="flex gap-2">
+                    <input type="text" id="newStudentInput" placeholder="Nama siswa baru..." class="flex-1 px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <button onclick="addSingleStudent()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition">
+                        Tambah
+                    </button>
+                </div>
 
-      document.getElementById('totalIn').innerText = `Rp ${totalIn.toLocaleString('id-ID')}`;
-      document.getElementById('totalOut').innerText = `Rp ${totalOut.toLocaleString('id-ID')}`;
-      
-      const netEl = document.getElementById('netProfit');
-      netEl.innerText = `Rp ${net.toLocaleString('id-ID')}`;
-      if (net < 0) {
-        netEl.style.color = 'var(--danger)';
-      } else {
-        netEl.style.color = 'var(--primary)';
-      }
-    }
+                <!-- Bulk Import Collapsible -->
+                <details class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+                    <summary class="font-semibold text-slate-700 dark:text-slate-300 cursor-pointer flex items-center gap-1">
+                        <i data-lucide="file-plus" class="w-4 h-4 text-emerald-600"></i> Tambah Banyak Siswa Sekaligus (Masal)
+                    </summary>
+                    <div class="mt-3 space-y-2">
+                        <textarea id="bulkStudentInput" rows="3" placeholder="Masukkan nama siswa (pisahkan dengan baris baru atau koma)..." class="w-full p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                        <button onclick="addBulkStudents()" class="w-full py-2 bg-slate-800 dark:bg-slate-700 hover:bg-slate-700 text-white font-semibold rounded-lg transition">
+                            Proses Impor Masal
+                        </button>
+                    </div>
+                </details>
 
-    /* ==========================================
-       KELOLA PESANAN PEMBELI
-       ========================================== */
-    function renderOrders() {
-      const list = document.getElementById('orderList');
-      list.innerHTML = '';
+                <!-- Student Roster List -->
+                <div class="border border-slate-200 dark:border-slate-700 rounded-xl divide-y divide-slate-100 dark:divide-slate-700 max-h-60 overflow-y-auto" id="studentRosterContainer">
+                    <!-- Dynamic student items -->
+                </div>
+            </div>
+        </div>
+    </div>
 
-      if (orders.length === 0) {
-        list.innerHTML = '<li style="color:var(--text-sub); font-size:0.85rem; text-align:center;">Belum ada pesanan masuk.</li>';
-        return;
-      }
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // DATA STRUCTURE & INITIAL STATE
+        let appData = {
+            classes: [
+                { id: 'c1', name: '10 IPA 1' },
+                { id: 'c2', name: '10 IPA 2' }
+            ],
+            students: {
+                'c1': [
+                    { id: 's1', name: 'Ahmad Fauzi' },
+                    { id: 's2', name: 'Budi Santoso' },
+                    { id: 's3', name: 'Citra Dewi' },
+                    { id: 's4', name: 'Dian Permata' },
+                    { id: 's5', name: 'Eko Prasetyo' }
+                ],
+                'c2': [
+                    { id: 's6', name: 'Fajar Nugraha' },
+                    { id: 's7', name: 'Gita Gutawa' }
+                ]
+            },
+            // Records format: { "classId_YYYY-MM-DD": { studentId: { status: 'Hadir', note: '' } } }
+            attendanceRecords: {}
+        };
 
-      orders.forEach((item, index) => {
-        const li = document.createElement('li');
-        li.className = 'list-item';
-        li.innerHTML = `
-          <div class="item-info">
-            <span class="item-title">${item.customer} - ${item.item}</span>
-            <span class="item-sub">Pemasukan Pesanan</span>
-          </div>
-          <div style="display:flex; align-items:center;">
-            <span class="item-amount val-in">+Rp ${item.price.toLocaleString('id-ID')}</span>
-            <button class="btn-delete" onclick="deleteOrder(${index})">✕</button>
-          </div>
-        `;
-        list.appendChild(li);
-      });
-    }
+        let activeClassId = 'c1';
 
-    function addOrder() {
-      const customer = document.getElementById('orderCustomer').value.trim();
-      const item = document.getElementById('orderItem').value.trim();
-      const price = parseInt(document.getElementById('orderPrice').value);
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromLocalStorage();
+            
+            // Set Today's Date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('attendanceDate').value = today;
 
-      if (!customer || !item || isNaN(price)) {
-        alert('Mohon isi nama pembeli, nama barang, dan harga dengan benar!');
-        return;
-      }
+            // Render Select Options & Load Active
+            renderClassSelector();
+            loadAttendanceForSelectedDate();
+            lucide.createIcons();
+        });
 
-      orders.push({ customer, item, price });
-      localStorage.setItem('toko_orders', JSON.stringify(orders));
+        // LOCAL STORAGE HANDLERS
+        function saveToLocalStorage() {
+            localStorage.setItem('ABSKES_DATA', JSON.stringify(appData));
+        }
 
-      document.getElementById('orderCustomer').value = '';
-      document.getElementById('orderItem').value = '';
-      document.getElementById('orderPrice').value = '';
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('ABSKES_DATA');
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                    if (appData.classes && appData.classes.length > 0) {
+                        activeClassId = appData.classes[0].id;
+                    }
+                } catch (e) {
+                    console.error("Gagal membaca LocalStorage:", e);
+                }
+            }
+        }
 
-      renderOrders();
-      updateFinancials();
-    }
+        // CLASS MANAGEMENT
+        function renderClassSelector() {
+            const selector = document.getElementById('classSelector');
+            selector.innerHTML = '';
 
-    function deleteOrder(index) {
-      orders.splice(index, 1);
-      localStorage.setItem('toko_orders', JSON.stringify(orders));
-      renderOrders();
-      updateFinancials();
-    }
+            appData.classes.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name;
+                if (c.id === activeClassId) opt.selected = true;
+                selector.appendChild(opt);
+            });
 
-    /* ==========================================
-       KELOLA BELANJA STOK
-       ========================================== */
-    function renderBuyItems() {
-      const list = document.getElementById('buyList');
-      list.innerHTML = '';
+            const currentClass = appData.classes.find(c => c.id === activeClassId);
+            const titleEl = document.getElementById('currentClassTitle');
+            if (currentClass) {
+                titleEl.innerHTML = `<i data-lucide="list-checks" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i> Kehadiran ${currentClass.name}`;
+            }
+            lucide.createIcons();
+        }
 
-      if (buyItems.length === 0) {
-        list.innerHTML = '<li style="color:var(--text-sub); font-size:0.85rem; text-align:center;">Daftar belanjaan stok kosong.</li>';
-        return;
-      }
+        function changeActiveClass() {
+            activeClassId = document.getElementById('classSelector').value;
+            renderClassSelector();
+            renderStudentList();
+        }
 
-      buyItems.forEach((item, index) => {
-        const li = document.createElement('li');
-        li.className = 'list-item';
-        li.innerHTML = `
-          <div class="item-info">
-            <span class="item-title">${item.item} (${item.qty} pcs)</span>
-            <span class="item-sub">Pengeluaran Stok</span>
-          </div>
-          <div style="display:flex; align-items:center;">
-            <span class="item-amount val-out">-Rp ${item.price.toLocaleString('id-ID')}</span>
-            <button class="btn-delete" onclick="deleteBuyItem(${index})">✕</button>
-          </div>
-        `;
-        list.appendChild(li);
-      });
-    }
+        function openClassModal() {
+            renderClassManageList();
+            document.getElementById('classModal').classList.remove('hidden');
+        }
 
-    function addBuyItem() {
-      const item = document.getElementById('buyItem').value.trim();
-      const qty = parseInt(document.getElementById('buyQty').value) || 1;
-      const price = parseInt(document.getElementById('buyPrice').value);
+        function closeClassModal() {
+            document.getElementById('classModal').classList.add('hidden');
+        }
 
-      if (!item || isNaN(price)) {
-        alert('Mohon isi nama barang dan estimasi harga belanja!');
-        return;
-      }
+        function renderClassManageList() {
+            const container = document.getElementById('classListContainer');
+            container.innerHTML = '';
 
-      buyItems.push({ item, qty, price });
-      localStorage.setItem('toko_buys', JSON.stringify(buyItems));
+            if (appData.classes.length === 0) {
+                container.innerHTML = `<div class="p-3 text-xs text-center text-slate-400">Belum ada kelas.</div>`;
+                return;
+            }
 
-      document.getElementById('buyItem').value = '';
-      document.getElementById('buyQty').value = '';
-      document.getElementById('buyPrice').value = '';
+            appData.classes.forEach(c => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition';
+                item.innerHTML = `
+                    <span class="text-sm font-semibold text-slate-800 dark:text-slate-200">${c.name}</span>
+                    <button onclick="deleteClass('${c.id}')" class="p-1 rounded text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+            lucide.createIcons();
+        }
 
-      renderBuyItems();
-      updateFinancials();
-    }
+        function addNewClass() {
+            const input = document.getElementById('newClassNameInput');
+            const name = input.value.trim();
+            if (!name) return;
 
-    function deleteBuyItem(index) {
-      buyItems.splice(index, 1);
-      localStorage.setItem('toko_buys', JSON.stringify(buyItems));
-      renderBuyItems();
-      updateFinancials();
-    }
+            const newId = 'c_' + Date.now();
+            appData.classes.push({ id: newId, name: name });
+            appData.students[newId] = [];
 
-    // Inisialisasi awal
-    renderOrders();
-    renderBuyItems();
-    updateFinancials();
-  </script>
+            input.value = '';
+            activeClassId = newId;
+
+            saveToLocalStorage();
+            renderClassSelector();
+            renderClassManageList();
+            renderStudentList();
+        }
+
+        function deleteClass(classId) {
+            if (appData.classes.length <= 1) {
+                alert("Minimal harus ada 1 kelas di dalam sistem!");
+                return;
+            }
+            if (confirm("Apakah Anda yakin ingin menghapus kelas ini beserta data siswanya?")) {
+                appData.classes = appData.classes.filter(c => c.id !== classId);
+                delete appData.students[classId];
+
+                if (activeClassId === classId) {
+                    activeClassId = appData.classes[0].id;
+                }
+
+                saveToLocalStorage();
+                renderClassSelector();
+                renderClassManageList();
+                renderStudentList();
+            }
+        }
+
+        // STUDENT ROSTER MANAGEMENT
+        function openStudentModal() {
+            const currentClass = appData.classes.find(c => c.id === activeClassId);
+            document.getElementById('modalClassNameSub').textContent = `Kelas: ${currentClass ? currentClass.name : '-'}`;
+            renderStudentManageList();
+            document.getElementById('studentModal').classList.remove('hidden');
+        }
+
+        function closeStudentModal() {
+            document.getElementById('studentModal').classList.add('hidden');
+        }
+
+        function renderStudentManageList() {
+            const container = document.getElementById('studentRosterContainer');
+            container.innerHTML = '';
+            const list = appData.students[activeClassId] || [];
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="p-4 text-xs text-center text-slate-400">Belum ada siswa di kelas ini.</div>`;
+                return;
+            }
+
+            list.forEach((s, idx) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition';
+                item.innerHTML = `
+                    <span class="text-sm text-slate-800 dark:text-slate-200 font-medium">${idx + 1}. ${s.name}</span>
+                    <button onclick="deleteStudent('${s.id}')" class="p-1 rounded text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+            lucide.createIcons();
+        }
+
+        function addSingleStudent() {
+            const input = document.getElementById('newStudentInput');
+            const name = input.value.trim();
+            if (!name) return;
+
+            if (!appData.students[activeClassId]) appData.students[activeClassId] = [];
+
+            appData.students[activeClassId].push({
+                id: 's_' + Date.now() + Math.random().toString(36).substr(2, 4),
+                name: name
+            });
+
+            input.value = '';
+            saveToLocalStorage();
+            renderStudentManageList();
+            renderStudentList();
+        }
+
+        function addBulkStudents() {
+            const textarea = document.getElementById('bulkStudentInput');
+            const text = textarea.value.trim();
+            if (!text) return;
+
+            const names = text.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0);
+            if (!appData.students[activeClassId]) appData.students[activeClassId] = [];
+
+            names.forEach(name => {
+                appData.students[activeClassId].push({
+                    id: 's_' + Date.now() + Math.random().toString(36).substr(2, 4),
+                    name: name
+                });
+            });
+
+            textarea.value = '';
+            saveToLocalStorage();
+            renderStudentManageList();
+            renderStudentList();
+        }
+
+        function deleteStudent(studentId) {
+            if (confirm("Hapus siswa ini dari daftar kelas?")) {
+                appData.students[activeClassId] = appData.students[activeClassId].filter(s => s.id !== studentId);
+                saveToLocalStorage();
+                renderStudentManageList();
+                renderStudentList();
+            }
+        }
+
+        // ATTENDANCE CORE LOGIC
+        function loadAttendanceForSelectedDate() {
+            renderStudentList();
+        }
+
+        function getRecordKey() {
+            const date = document.getElementById('attendanceDate').value;
+            return `${activeClassId}_${date}`;
+        }
+
+        function renderStudentList() {
+            const tbody = document.getElementById('studentTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const recordKey = getRecordKey();
+
+            if (!appData.attendanceRecords[recordKey]) {
+                appData.attendanceRecords[recordKey] = {};
+            }
+
+            const currentRecord = appData.attendanceRecords[recordKey];
+            const studentList = appData.students[activeClassId] || [];
+
+            // Filter
+            const filteredStudents = studentList.filter(s => s.name.toLowerCase().includes(searchVal));
+
+            document.getElementById('studentCountBadge').textContent = `${studentList.length} Siswa`;
+            tbody.innerHTML = '';
+
+            if (studentList.length === 0) {
+                emptyState.classList.remove('hidden');
+                tbody.parentElement.classList.add('hidden');
+                updateStats();
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+                tbody.parentElement.classList.remove('hidden');
+            }
+
+            filteredStudents.forEach((student, index) => {
+                const rec = currentRecord[student.id] || { status: 'Hadir', note: '' };
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition';
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-center font-medium text-slate-400 text-xs">${index + 1}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100">${student.name}</td>
+                    <td class="py-3 px-4 text-center">
+                        <div class="inline-flex p-1 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200/80 dark:border-slate-700">
+                            ${renderStatusBtn(student.id, 'Hadir', rec.status, 'emerald', 'Hadir')}
+                            ${renderStatusBtn(student.id, 'Izin', rec.status, 'blue', 'Izin')}
+                            ${renderStatusBtn(student.id, 'Sakit', rec.status, 'amber', 'Sakit')}
+                            ${renderStatusBtn(student.id, 'Alfa', rec.status, 'rose', 'Alfa')}
+                        </div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <input type="text" value="${rec.note || ''}" 
+                            onchange="updateNote('${student.id}', this.value)"
+                            placeholder="Tambah catatan..." 
+                            class="w-full bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            updateStats();
+            lucide.createIcons();
+        }
+
+        function renderStatusBtn(studentId, statusType, currentStatus, color, label) {
+            const isActive = currentStatus === statusType;
+            const activeClasses = {
+                emerald: 'bg-emerald-500 text-white font-bold shadow-sm',
+                blue: 'bg-blue-500 text-white font-bold shadow-sm',
+                amber: 'bg-amber-500 text-white font-bold shadow-sm',
+                rose: 'bg-rose-500 text-white font-bold shadow-sm'
+            };
+            const inactiveClass = 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200';
+
+            return `
+                <button onclick="setStatus('${studentId}', '${statusType}')" 
+                    class="px-2.5 py-1 text-xs rounded-lg transition-all ${isActive ? activeClasses[color] : inactiveClass}">
+                    ${label}
+                </button>
+            `;
+        }
+
+        function setStatus(studentId, status) {
+            const key = getRecordKey();
+            if (!appData.attendanceRecords[key]) appData.attendanceRecords[key] = {};
+            if (!appData.attendanceRecords[key][studentId]) appData.attendanceRecords[key][studentId] = { status: 'Hadir', note: '' };
+
+            appData.attendanceRecords[key][studentId].status = status;
+            saveToLocalStorage();
+            renderStudentList();
+        }
+
+        function updateNote(studentId, noteText) {
+            const key = getRecordKey();
+            if (!appData.attendanceRecords[key]) appData.attendanceRecords[key] = {};
+            if (!appData.attendanceRecords[key][studentId]) appData.attendanceRecords[key][studentId] = { status: 'Hadir', note: '' };
+
+            appData.attendanceRecords[key][studentId].note = noteText;
+            saveToLocalStorage();
+        }
+
+        function markAll(status) {
+            const key = getRecordKey();
+            if (!appData.attendanceRecords[key]) appData.attendanceRecords[key] = {};
+            const studentList = appData.students[activeClassId] || [];
+
+            studentList.forEach(student => {
+                if (!appData.attendanceRecords[key][student.id]) {
+                    appData.attendanceRecords[key][student.id] = { status: status, note: '' };
+                } else {
+                    appData.attendanceRecords[key][student.id].status = status;
+                }
+            });
+
+            saveToLocalStorage();
+            renderStudentList();
+        }
+
+        function updateStats() {
+            const studentList = appData.students[activeClassId] || [];
+            const total = studentList.length;
+            const key = getRecordKey();
+            const currentRecord = appData.attendanceRecords[key] || {};
+
+            let counts = { Hadir: 0, Izin: 0, Sakit: 0, Alfa: 0 };
+
+            studentList.forEach(student => {
+                const rec = currentRecord[student.id] || { status: 'Hadir' };
+                if (counts[rec.status] !== undefined) {
+                    counts[rec.status]++;
+                } else {
+                    counts['Hadir']++;
+                }
+            });
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statHadir').textContent = counts.Hadir;
+            document.getElementById('statIzin').textContent = counts.Izin;
+            document.getElementById('statSakit').textContent = counts.Sakit;
+            document.getElementById('statAlfa').textContent = counts.Alfa;
+
+            const hadirPercent = total > 0 ? Math.round((counts.Hadir / total) * 100) : 0;
+            document.getElementById('statPercent').textContent = `${hadirPercent}%`;
+
+            if (total > 0) {
+                document.getElementById('barHadir').style.width = `${(counts.Hadir / total) * 100}%`;
+                document.getElementById('barIzin').style.width = `${(counts.Izin / total) * 100}%`;
+                document.getElementById('barSakit').style.width = `${(counts.Sakit / total) * 100}%`;
+                document.getElementById('barAlfa').style.width = `${(counts.Alfa / total) * 100}%`;
+            } else {
+                document.getElementById('barHadir').style.width = '0%';
+                document.getElementById('barIzin').style.width = '0%';
+                document.getElementById('barSakit').style.width = '0%';
+                document.getElementById('barAlfa').style.width = '0%';
+            }
+        }
+
+        // EXPORT CSV
+        function exportToCSV() {
+            const studentList = appData.students[activeClassId] || [];
+            if (studentList.length === 0) {
+                alert("Tidak ada data siswa untuk diekspor!");
+                return;
+            }
+
+            const currentClass = appData.classes.find(c => c.id === activeClassId);
+            const date = document.getElementById('attendanceDate').value;
+            const key = getRecordKey();
+            const currentRecord = appData.attendanceRecords[key] || {};
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += `Laporan Absensi - ${currentClass ? currentClass.name : ''}\n`;
+            csvContent += `Tanggal: ${date}\n\n`;
+            csvContent += "No,Nama Siswa,Status,Catatan\n";
+
+            studentList.forEach((student, index) => {
+                const rec = currentRecord[student.id] || { status: 'Hadir', note: '' };
+                const cleanNote = (rec.note || '').replace(/,/g, ' ');
+                csvContent += `${index + 1},"${student.name}",${rec.status},"${cleanNote}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Absensi_${currentClass ? currentClass.name : 'Kelas'}_${date}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // DARK MODE TOGGLE
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
 </body>
 </html>
