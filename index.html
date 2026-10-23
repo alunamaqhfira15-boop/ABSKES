@@ -1,18 +1,19 @@
-<!DOCTYPE1 html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Boba Tap & Retro Runner - Game Anak Sekolah</title>
+  <title>Study Lounge - Ambient & Lofi Player</title>
   <style>
     :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --accent-purple: #a855f7;
-      --accent-pink: #ec4899;
-      --accent-yellow: #eab308;
-      --text-light: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg-gradient: linear-gradient(135deg, #0f172a, #1e1b4b, #311042);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-purple: #c084fc;
+      --accent-pink: #f472b6;
+      --accent-cyan: #38bdf8;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
     }
 
     * {
@@ -24,479 +25,530 @@
     }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-light);
+      background: var(--bg-gradient);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: var(--text-main);
       min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Canvas Partikel Background */
+    #visualizerCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .app-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 900px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Glassmorphic Card */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 25px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    .title-section {
+      text-align: center;
+      margin-bottom: 20px;
+      grid-column: 1 / -1;
+    }
+
+    .title-section h1 {
+      font-size: 2.2rem;
+      background: linear-gradient(to right, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .title-section p {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      margin-top: 5px;
+    }
+
+    /* Pomodoro Timer */
+    .timer-card {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
     }
 
-    .container {
-      width: 100%;
-      max-width: 500px;
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      text-align: center;
+    .timer-display {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin: 15px 0;
+      font-family: monospace;
+      color: var(--accent-cyan);
+      text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
     }
 
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 5px;
-      background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    p.subtitle {
-      color: var(--text-muted);
+    .timer-status {
       font-size: 0.9rem;
-      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-pink);
+      font-weight: 600;
     }
 
-    /* Tab Switcher */
-    .tabs {
+    .btn-group {
       display: flex;
       gap: 10px;
-      margin-bottom: 20px;
-      background: rgba(0,0,0,0.2);
-      padding: 5px;
-      border-radius: 12px;
+      margin-top: 10px;
     }
 
-    .tab-btn {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      font-weight: bold;
-      border-radius: 8px;
+    .btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--card-border);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 12px;
       cursor: pointer;
+      font-weight: 600;
       transition: all 0.3s;
     }
 
-    .tab-btn.active {
+    .btn:hover {
       background: var(--accent-purple);
-      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(192, 132, 252, 0.4);
     }
 
-    .game-section {
-      display: none;
-    }
-
-    .game-section.active {
-      display: block;
-    }
-
-    /* Game 1: Boba Tap Style */
-    .boba-display {
-      position: relative;
-      margin: 20px 0;
-    }
-
-    .score-title {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: var(--accent-yellow);
-    }
-
-    .cps-title {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 15px;
-    }
-
-    .boba-btn {
-      font-size: 5rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.1s;
-      outline: none;
-      filter: drop-shadow(0 10px 15px rgba(168, 85, 247, 0.4));
-    }
-
-    .boba-btn:active {
-      transform: scale(0.85);
-    }
-
-    .upgrades {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .upgrade-btn {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 12px 15px;
-      border-radius: 10px;
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .upgrade-btn:hover:not(:disabled) {
-      background: rgba(168, 85, 247, 0.2);
-    }
-
-    .upgrade-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    /* Game 2: Runner Canvas */
-    canvas {
-      background: #000;
-      border-radius: 12px;
-      width: 100%;
-      height: 200px;
-      display: block;
-      margin-bottom: 15px;
-    }
-
-    .runner-controls {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .action-btn {
+    .btn-active {
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-weight: bold;
+    }
+
+    /* Ambient Sound Mixer */
+    .ambient-card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: var(--accent-purple);
+    }
+
+    .sound-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 12px 15px;
+      border-radius: 14px;
+    }
+
+    .sound-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+
+    .slider {
+      width: 100px;
+      accent-color: var(--accent-purple);
       cursor: pointer;
-      font-size: 1rem;
-      transition: opacity 0.2s;
     }
 
-    .action-btn:hover {
-      opacity: 0.9;
+    /* Music Player Simple */
+    .player-card {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
     }
 
-    /* Floating Score Effect */
-    .floating-text {
-      position: absolute;
-      color: var(--accent-yellow);
-      font-weight: bold;
+    .track-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .track-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 1.5rem;
-      pointer-events: none;
-      animation: floatUp 0.8s ease-out forwards;
     }
 
-    @keyframes floatUp {
-      0% { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-50px); }
+    .play-master-btn {
+      background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(244, 114, 182, 0.4);
+      transition: transform 0.2s;
+    }
+
+    .play-master-btn:hover {
+      transform: scale(1.08);
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Arcade Pelajar</h1>
-    <p class="subtitle">Istirahat sejenak & kumpulkan skor tertinggi!</p>
+  <!-- Background Visualizer Canvas -->
+  <canvas id="visualizerCanvas"></canvas>
 
-    <!-- Navigasi Tab Game -->
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('boba')">🧋 Boba Tap</button>
-      <button class="tab-btn" onclick="switchTab('runner')">🏃 Retro Runner</button>
+  <div class="app-container">
+    
+    <!-- Title Section -->
+    <div class="title-section">
+      <h1>🎧 Study Lounge Aesthetic</h1>
+      <p>Ruang musik & audio ambient penyemangat belajar untuk pelajar</p>
     </div>
 
-    <!-- GAME 1: BOBA TAP -->
-    <div id="boba-game" class="game-section active">
-      <div class="score-title" id="boba-count">0</div>
-      <div class="cps-title">Boba / Detik: <span id="cps-val">0</span></div>
-
-      <div class="boba-display" id="boba-area">
-        <button class="boba-btn" id="tap-btn">🧋</button>
-      </div>
-
-      <div class="upgrades">
-        <button class="upgrade-btn" id="upg-click" onclick="buyClick()">
-          <span>👆 Sedotan Pro (+1/klik)</span>
-          <span id="cost-click">10 Boba</span>
-        </button>
-        <button class="upgrade-btn" id="upg-auto" onclick="buyAuto()">
-          <span>🤖 Robot Penyedot (+1/detik)</span>
-          <span id="cost-auto">50 Boba</span>
-        </button>
+    <!-- 1. Pomodoro Timer Card -->
+    <div class="glass-card timer-card">
+      <div class="timer-status" id="timerMode">Sesi Belajar</div>
+      <div class="timer-display" id="timeDisplay">25:00</div>
+      <div class="btn-group">
+        <button class="btn btn-active" id="startTimerBtn" onclick="toggleTimer()">Mulai</button>
+        <button class="btn" onclick="resetTimer()">Reset</button>
+        <button class="btn" onclick="switchMode()">Mode Istirahat</button>
       </div>
     </div>
 
-    <!-- GAME 2: RETRO RUNNER -->
-    <div id="runner-game" class="game-section">
-      <canvas id="runnerCanvas" width="450" height="200"></canvas>
-      <div class="runner-controls">
-        <button class="action-btn" id="start-runner-btn" onclick="startRunner()">Mulai Game</button>
-        <button class="action-btn" onclick="jumpRunner()">Lompat (Spasi)</button>
+    <!-- 2. Ambient Sound Mixer Card -->
+    <div class="glass-card ambient-card">
+      <h2>🌧️ Ambient Sound Mixer</h2>
+      
+      <!-- Hujan -->
+      <div class="sound-item">
+        <div class="sound-info">
+          <span>🌧️ Suara Hujan</span>
+        </div>
+        <input type="range" class="slider" id="rainVol" min="0" max="100" value="0" oninput="updateAmbient('rain', this.value)">
+      </div>
+
+      <!-- Api Unggun -->
+      <div class="sound-item">
+        <div class="sound-info">
+          <span>🔥 Api Unggun</span>
+        </div>
+        <input type="range" class="slider" id="fireVol" min="0" max="100" value="0" oninput="updateAmbient('fire', this.value)">
+      </div>
+
+      <!-- Suara Cafe -->
+      <div class="sound-item">
+        <div class="sound-info">
+          <span>☕ Suara Kafe</span>
+        </div>
+        <input type="range" class="slider" id="cafeVol" min="0" max="100" value="0" oninput="updateAmbient('cafe', this.value)">
       </div>
     </div>
+
+    <!-- 3. Bottom Master Controller Card -->
+    <div class="glass-card player-card">
+      <div class="track-info">
+        <div class="track-icon">✨</div>
+        <div>
+          <h3 id="nowPlayingText">Siap Fokus Belajar</h3>
+          <p style="color: var(--text-sub); font-size: 0.85rem;">Geser slider ambient di atas untuk memainkan suara</p>
+        </div>
+      </div>
+      <button class="play-master-btn" id="masterPlayBtn" onclick="toggleMasterAudio()">▶</button>
+    </div>
+
   </div>
 
   <script>
-    /* ------------------------------------
-       AUDIO SYNTHESIZER (Tanpa File MP3)
-    ------------------------------------ */
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    /* ==========================================
+       1. WEB AUDIO API SYNTHESIZER (TANPA FILE MP3)
+       ========================================== */
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
     
-    function playSound(freq, type = 'sine', duration = 0.1) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+    // Nodes untuk Suara
+    let rainNode = null, rainGain = null;
+    let fireNode = null, fireGain = null;
+    let isMasterPlaying = false;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // Generator White Noise untuk Hujan
+    function createRainSound() {
+      const bufferSize = audioCtx.sampleRate * 2;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      noise.loop = true;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 1000;
+
+      rainGain = audioCtx.createGain();
+      rainGain.gain.value = 0;
+
+      noise.connect(filter);
+      filter.connect(rainGain);
+      rainGain.connect(audioCtx.destination);
+      noise.start();
+      return { noise, rainGain };
+    }
+
+    // Generator Pink Noise untuk Api Unggun
+    function createFireSound() {
+      const bufferSize = audioCtx.sampleRate * 2;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        let white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+        data[i] *= 0.11;
+        b6 = white * 0.115926;
+      }
+
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      noise.loop = true;
+
+      fireGain = audioCtx.createGain();
+      fireGain.gain.value = 0;
+
+      noise.connect(fireGain);
+      fireGain.connect(audioCtx.destination);
+      noise.start();
+      return { noise, fireGain };
+    }
+
+    function updateAmbient(type, val) {
+      initAudio();
+      const volume = val / 100;
+
+      if (type === 'rain') {
+        if (!rainNode) rainNode = createRainSound();
+        rainGain.gain.setTargetAtTime(volume * 0.5, audioCtx.currentTime, 0.1);
+      } else if (type === 'fire') {
+        if (!fireNode) fireNode = createFireSound();
+        fireGain.gain.setTargetAtTime(volume * 0.4, audioCtx.currentTime, 0.1);
+      }
+
+      updateMasterState();
+    }
+
+    function updateMasterState() {
+      const rainVal = document.getElementById('rainVol').value;
+      const fireVal = document.getElementById('fireVol').value;
+      const cafeVal = document.getElementById('cafeVol').value;
+
+      if (rainVal > 0 || fireVal > 0 || cafeVal > 0) {
+        isMasterPlaying = true;
+        document.getElementById('masterPlayBtn').innerText = '⏸';
+        document.getElementById('nowPlayingText').innerText = 'Memutar Suara Ambient';
+      } else {
+        isMasterPlaying = false;
+        document.getElementById('masterPlayBtn').innerText = '▶';
+        document.getElementById('nowPlayingText').innerText = 'Siap Fokus Belajar';
+      }
+    }
+
+    function toggleMasterAudio() {
+      initAudio();
+      if (isMasterPlaying) {
+        // Mute All
+        if (rainGain) rainGain.gain.value = 0;
+        if (fireGain) fireGain.gain.value = 0;
+        document.getElementById('rainVol').value = 0;
+        document.getElementById('fireVol').value = 0;
+        document.getElementById('cafeVol').value = 0;
+        updateMasterState();
+      } else {
+        // Play default rain
+        document.getElementById('rainVol').value = 50;
+        updateAmbient('rain', 50);
+      }
+    }
+
+    /* ==========================================
+       2. POMODORO TIMER LOGIC
+       ========================================== */
+    let timerSeconds = 25 * 60;
+    let isTimerRunning = false;
+    let timerInterval = null;
+    let isStudyMode = true;
+
+    const timeDisplay = document.getElementById('timeDisplay');
+    const startTimerBtn = document.getElementById('startTimerBtn');
+    const timerModeText = document.getElementById('timerMode');
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      timeDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function toggleTimer() {
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        startTimerBtn.innerText = 'Lanjut';
+      } else {
+        isTimerRunning = true;
+        startTimerBtn.innerText = 'Jeda';
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            playNotificationSound();
+            alert(isStudyMode ? 'Waktu belajar selesai! Sesi istirahat dimulai.' : 'Waktu istirahat selesai! Kembali belajar!');
+            switchMode();
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      timerSeconds = isStudyMode ? 25 * 60 : 5 * 60;
+      startTimerBtn.innerText = 'Mulai';
+      updateTimerDisplay();
+    }
+
+    function switchMode() {
+      isStudyMode = !isStudyMode;
+      timerModeText.innerText = isStudyMode ? 'Sesi Belajar' : 'Sesi Istirahat';
+      timerModeText.style.color = isStudyMode ? 'var(--accent-pink)' : 'var(--accent-cyan)';
+      resetTimer();
+    }
+
+    function playNotificationSound() {
+      initAudio();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Note D5
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start();
-      osc.stop(audioCtx.currentTime + duration);
+      osc.stop(audioCtx.currentTime + 0.5);
     }
 
-    /* ------------------------------------
-       TAB SWITCHING
-    ------------------------------------ */
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.game-section').forEach(sec => sec.classList.remove('active'));
-
-      if (tab === 'boba') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
-        document.getElementById('boba-game').classList.add('active');
-      } else {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
-        document.getElementById('runner-game').classList.add('active');
-        initRunnerCanvas();
-      }
-    }
-
-    /* ------------------------------------
-       GAME 1: BOBA CLICKER LOGIC
-    ------------------------------------ */
-    let boba = parseInt(localStorage.getItem('boba_score')) || 0;
-    let clickPower = parseInt(localStorage.getItem('boba_power')) || 1;
-    let autoPower = parseInt(localStorage.getItem('boba_auto')) || 0;
-
-    let costClick = 10 * Math.pow(1.5, clickPower - 1);
-    let costAuto = 50 * Math.pow(1.5, autoPower);
-
-    const bobaCountEl = document.getElementById('boba-count');
-    const cpsValEl = document.getElementById('cps-val');
-    const tapBtn = document.getElementById('tap-btn');
-    const upgClickBtn = document.getElementById('upg-click');
-    const upgAutoBtn = document.getElementById('upg-auto');
-
-    function updateBobaUI() {
-      bobaCountEl.innerText = Math.floor(boba);
-      cpsValEl.innerText = autoPower;
-      
-      document.getElementById('cost-click').innerText = Math.floor(costClick) + " Boba";
-      document.getElementById('cost-auto').innerText = Math.floor(costAuto) + " Boba";
-
-      upgClickBtn.disabled = boba < costClick;
-      upgAutoBtn.disabled = boba < costAuto;
-
-      // Save progress
-      localStorage.setItem('boba_score', boba);
-      localStorage.setItem('boba_power', clickPower);
-      localStorage.setItem('boba_auto', autoPower);
-    }
-
-    tapBtn.addEventListener('click', (e) => {
-      boba += clickPower;
-      playSound(400 + Math.random() * 200, 'sine', 0.08);
-      createFloatingText(`+${clickPower}`, e.clientX, e.clientY);
-      updateBobaUI();
-    });
-
-    function buyClick() {
-      if (boba >= costClick) {
-        boba -= costClick;
-        clickPower++;
-        costClick *= 1.5;
-        playSound(600, 'triangle', 0.15);
-        updateBobaUI();
-      }
-    }
-
-    function buyAuto() {
-      if (boba >= costAuto) {
-        boba -= costAuto;
-        autoPower++;
-        costAuto *= 1.5;
-        playSound(800, 'triangle', 0.15);
-        updateBobaUI();
-      }
-    }
-
-    // Auto Clicker Interval (1 detik)
-    setInterval(() => {
-      if (autoPower > 0) {
-        boba += autoPower;
-        updateBobaUI();
-      }
-    }, 1000);
-
-    function createFloatingText(text, x, y) {
-      const el = document.createElement('div');
-      el.className = 'floating-text';
-      el.innerText = text;
-      el.style.left = `${x - 15}px`;
-      el.style.top = `${y - 30}px`;
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 800);
-    }
-
-    updateBobaUI();
-
-    /* ------------------------------------
-       GAME 2: RETRO RUNNER LOGIC (CANVAS)
-    ------------------------------------ */
-    const canvas = document.getElementById('runnerCanvas');
+    /* ==========================================
+       3. BACKGROUND PARTICLE CANVAS VISUALIZER
+       ========================================== */
+    const canvas = document.getElementById('visualizerCanvas');
     const ctx = canvas.getContext('2d');
+    let particles = [];
 
-    let runnerPlaying = false;
-    let score = 0;
-    let highScore = localStorage.getItem('runner_hi') || 0;
-    let animationFrame;
-
-    let player = { x: 50, y: 140, w: 20, h: 30, dy: 0, gravity: 0.6, jumped: false };
-    let obstacles = [];
-    let frameCount = 0;
-
-    function initRunnerCanvas() {
-      ctx.fillStyle = "#1e293b";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#94a3b8";
-      ctx.font = "14px Segoe UI";
-      ctx.textAlign = "center";
-      ctx.fillText("Tekan 'Mulai Game' atau Spasi untuk Melompat", canvas.width / 2, canvas.height / 2);
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-    function startRunner() {
-      if (runnerPlaying) return;
-      runnerPlaying = true;
-      score = 0;
-      obstacles = [];
-      player.y = 140;
-      player.dy = 0;
-      document.getElementById('start-runner-btn').innerText = "Main Lagi";
-      gameLoop();
-    }
-
-    function jumpRunner() {
-      if (!runnerPlaying) {
-        startRunner();
-        return;
-      }
-      if (!player.jumped) {
-        player.dy = -10;
-        player.jumped = true;
-        playSound(300, 'square', 0.1);
-      }
-    }
-
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && document.getElementById('runner-game').classList.contains('active')) {
-        e.preventDefault();
-        jumpRunner();
-      }
-    });
-
-    function gameLoop() {
-      if (!runnerPlaying) return;
-
-      frameCount++;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Background & Tanah
-      ctx.fillStyle = "#0f172a";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#a855f7";
-      ctx.fillRect(0, 170, canvas.width, 30);
-
-      // Player Physics
-      player.dy += player.gravity;
-      player.y += player.dy;
-
-      if (player.y >= 140) {
-        player.y = 140;
-        player.dy = 0;
-        player.jumped = false;
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * -0.5 - 0.2;
+        this.opacity = Math.random() * 0.5 + 0.2;
       }
 
-      // Draw Player (Karakter Kotak Neon)
-      ctx.fillStyle = "#ec4899";
-      ctx.fillRect(player.x, player.y, player.w, player.h);
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
 
-      // Spawning Rintangan (Buku / Tugas)
-      if (frameCount % 90 === 0) {
-        obstacles.push({ x: canvas.width, w: 15, h: 25 + Math.random() * 15 });
-      }
-
-      // Update & Draw Obstacles
-      for (let i = 0; i < obstacles.length; i++) {
-        let obs = obstacles[i];
-        obs.x -= 4;
-
-        ctx.fillStyle = "#eab308";
-        ctx.fillRect(obs.x, 170 - obs.h, obs.w, obs.h);
-
-        // Collision Detection
-        if (
-          player.x < obs.x + obs.w &&
-          player.x + player.w > obs.x &&
-          player.y < 170 &&
-          player.y + player.h > 170 - obs.h
-        ) {
-          // Game Over
-          runnerPlaying = false;
-          playSound(150, 'sawtooth', 0.3);
-          if (score > highScore) {
-            highScore = score;
-            localStorage.setItem('runner_hi', highScore);
-          }
-          
-          ctx.fillStyle = "rgba(0,0,0,0.7)";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = "#f8fafc";
-          ctx.font = "20px Segoe UI";
-          ctx.textAlign = "center";
-          ctx.fillText("GAME OVER!", canvas.width / 2, 80);
-          ctx.fillText(`Skor: ${score} | High Score: ${highScore}`, canvas.width / 2, 120);
-          return;
+        if (this.y < 0) {
+          this.y = canvas.height;
+          this.x = Math.random() * canvas.width;
         }
       }
 
-      // Clean obstacles
-      obstacles = obstacles.filter(obs => obs.x + obs.w > 0);
-
-      // Score
-      score++;
-      ctx.fillStyle = "#f8fafc";
-      ctx.font = "12px Segoe UI";
-      ctx.textAlign = "left";
-      ctx.fillText(`Skor: ${score}`, 15, 25);
-      ctx.fillText(`High Score: ${highScore}`, 15, 45);
-
-      animationFrame = requestAnimationFrame(gameLoop);
+      draw() {
+        ctx.fillStyle = `rgba(192, 132, 252, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
-    // Inisialisasi tampilan awal
-    initRunnerCanvas();
+    for (let i = 0; i < 50; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
   </script>
 </body>
 </html>
