@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAKON - Laporan Absensi dan Keaktifan Online Negeri</title>
+    <title>ABSKES - Aplikasi Absensi Kelas</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -47,8 +47,7 @@
                 <div class="inline-flex p-4 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mb-1 shadow-inner">
                     <i data-lucide="clipboard-check" class="w-10 h-10"></i>
                 </div>
-                <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Selamat Datang di <span class="text-emerald-600 dark:text-emerald-400">LAKON</span></h1>
-                <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 tracking-wider uppercase">Laporan Absensi dan Keaktifan Online Negeri</p>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Selamat Datang di <span class="text-emerald-600 dark:text-emerald-400">ABSKES</span></h1>
                 <p class="text-sm text-slate-500 dark:text-slate-400">Silakan masukkan identitas guru pengajar untuk memulai absensi kelas.</p>
             </div>
 
@@ -71,7 +70,7 @@
                 </div>
 
                 <button type="submit" class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/40 transition-all flex items-center justify-center gap-2 text-sm mt-2">
-                    Masuk ke LAKON <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    Masuk ke ABSKES <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
             </form>
 
@@ -96,7 +95,7 @@
                         </div>
                         <div>
                             <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                                LAKON
+                                ABSKES
                             </h1>
                             <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
                                 <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
@@ -478,11 +477,11 @@
         }
 
         function saveToLocalStorage() {
-            localStorage.setItem('LAKON_DATA', JSON.stringify(appData));
+            localStorage.setItem('ABSKES_DATA', JSON.stringify(appData));
         }
 
         function loadFromLocalStorage() {
-            const saved = localStorage.getItem('LAKON_DATA') || localStorage.getItem('ABSKES_DATA');
+            const saved = localStorage.getItem('ABSKES_DATA');
             if (saved) {
                 try {
                     appData = JSON.parse(saved);
@@ -933,6 +932,9 @@
             }
         }
 
+        // ==========================================
+        // FITUR BARU: EKSPOR FILE EXCEL (.XLSX)
+        // ==========================================
         function exportToExcel() {
             const studentList = appData.students[activeClassId] || [];
             if (studentList.length === 0) {
@@ -945,10 +947,9 @@
             const key = getRecordKey();
             const currentRecord = appData.attendanceRecords[key] || {};
 
-            // Struktur Data Spreadsheet LAKON
+            // Buat Struktur Data Spreadsheet
             const excelData = [
-                [`LAKON - LAPORAN ABSENSI DAN KEAKTIFAN ONLINE NEGERI`],
-                [`Kelas: ${currentClass ? currentClass.name : ''}`],
+                [`LAPORAN ABSENSI KELAS - ${currentClass ? currentClass.name : ''}`],
                 [`Guru Pengajar: ${appData.teacher.name || '-'}`],
                 [`NIP/NIK Guru: ${appData.teacher.nip || '-'}`],
                 [`Tanggal: ${date}`],
@@ -971,7 +972,7 @@
             const wb = XLSX.utils.book_new();
             const ws = XLSX.utils.aoa_to_sheet(excelData);
 
-            // Mengatur Lebar Kolom
+            // Mengatur Lebar Kolom Otomatis
             ws['!cols'] = [
                 { wch: 6 },  // No
                 { wch: 15 }, // NIS
@@ -980,10 +981,10 @@
                 { wch: 35 }  // Catatan
             ];
 
-            XLSX.utils.book_append_sheet(wb, ws, "Laporan Absensi");
+            XLSX.utils.book_append_sheet(wb, ws, "Daftar Hadir");
 
             // Mengunduh File .xlsx
-            const fileName = `LAKON_Absensi_${currentClass ? currentClass.name.replace(/\s+/g, '_') : 'Kelas'}_${date}.xlsx`;
+            const fileName = `Absensi_${currentClass ? currentClass.name.replace(/\s+/g, '_') : 'Kelas'}_${date}.xlsx`;
             XLSX.writeFile(wb, fileName);
         }
 
